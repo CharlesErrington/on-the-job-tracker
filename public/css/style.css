@@ -8,3 +8,21 @@ h1{
 .not{
     text-decoration: underline;
 }
+
+.jumbotron {
+    background-color: transparent;
+}
+
+#googleMap {
+    width: 80%;
+    height: 400px;
+    margin: 20px auto;
+}
+
+.jobList {
+    display: block !important;
+  }
+  
+div.job-item {
+    display: block !important;
+  }

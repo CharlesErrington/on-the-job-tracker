@@ -1,6 +1,7 @@
 const passport = require('passport')
 const validator = require('validator')
 const User = require('../models/User')
+const Company = require('../models/Company')
 
  exports.getLogin = (req, res) => {
     if (req.user) {
@@ -67,29 +68,87 @@ const User = require('../models/User')
       return res.redirect('../signup')
     }
     req.body.email = validator.normalizeEmail(req.body.email, { gmail_remove_dots: false })
-  
+    
+    let formattedCompany = req.body.company.toLowerCase().split(' ').map(el => el[0].toUpperCase() + el.slice(1)).join(' ')
+
     const user = new User({
       userName: req.body.userName,
       email: req.body.email,
+      company: formattedCompany,
       password: req.body.password
     })
   
     User.findOne({$or: [
       {email: req.body.email},
       {userName: req.body.userName}
-    ]}, (err, existingUser) => {
+    ]}, async (err, existingUser) => {
       if (err) { return next(err) }
       if (existingUser) {
         req.flash('errors', { msg: 'Account with that email address or username already exists.' })
         return res.redirect('../signup')
       }
+      console.log(`req.body.company ${req.body.company}`)
+      
+      const existingCompany = await Company.find({ companyName: formattedCompany })
+      console.log(`existingCompany ${existingCompany}`)
+      if (!existingCompany || existingCompany == '' || existingCompany == null || existingCompany == undefined) {
+        console.log(`there is no existing company`)
+        req.flash('errors', { msg: 'Company with that name does not exist' })
+        console.log('errors', { msg: 'Company with that name does not exist' })
+        return res.redirect('../signup')
+        }
+      
       user.save((err) => {
         if (err) { return next(err) }
         req.logIn(user, (err) => {
           if (err) {
             return next(err)
           }
-          res.redirect('/todos')
+          res.redirect('/companies')
+        })
+      })
+    })
+  }
+
+  exports.getCompanySignup = (req, res) => {
+    // if (req.user) {
+    //   return res.redirect('/todos')
+    // }
+    res.render('companySignUp', {
+      title: 'Create Account'
+    })
+  }
+
+  exports.postCompanySignup = (req, res, next) => {
+    console.log('running postCompanySignup')
+  
+    let formattedCompany = req.body.companyName.toLowerCase().split(' ').map(el => el[0].toUpperCase() + el.slice(1)).join(' ')
+    const company = new Company({
+      companyName: formattedCompany,
+    })
+  
+    Company.findOne({$or: [
+      {company: formattedCompany},
+
+    ]}, async (err, existingCompany) => {
+      if (err) { return next(err) }
+
+      if (existingCompany) {
+        req.flash('errors', { msg: 'A company with that name already exists.' })
+        return res.redirect('../companySignUp')
+      }
+      let mongoCompany = await Company.find({ companyName: formattedCompany })
+      if (mongoCompany) {
+        req.flash('errors', { msg: 'A company with that name already exists.' })
+        return res.redirect('../companySignUp')
+      }
+      company.save((err) => {
+        if (err) { return next(err) }
+        req.logIn(company, (err) => {
+          if (err) {
+            return next(err)
+          }
+          res.redirect('/companies')
         })
       })
     })
