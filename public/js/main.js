@@ -289,6 +289,10 @@ function calcRoute() {
                 finishHour += 1
             }
 
+            if (finishMinutes < 10) {
+                finishMinutes = '0' + finishMinutes
+            }
+
             console.log('finishHour after ', finishHour)
             console.log('finishMinutes  after', finishMinutes)
             
