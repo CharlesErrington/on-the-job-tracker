@@ -3,6 +3,7 @@ const todoItem = document.querySelectorAll('span.not')
 const todoComplete = document.querySelectorAll('span.completed')
 const deleteBtnStartTime = document.querySelectorAll('.delStartTime')
 const deleteBtnStartLocation = document.querySelectorAll('.delStartLocation')
+const deleteBtnFinishTime = document.querySelectorAll('.delFinishTime')
 
 document.querySelector("#routebtn").addEventListener('click', calcRoute)
 
@@ -24,6 +25,10 @@ Array.from(deleteBtnStartTime).forEach((el) => {
 
 Array.from(deleteBtnStartLocation).forEach((el) => {
     el.addEventListener('click', deleteStartLocation)
+})
+
+Array.from(deleteBtnFinishTime).forEach((el) => {
+    el.addEventListener('click', deleteFinishTime)
 })
 
 async function deleteJob(){
@@ -53,6 +58,25 @@ async function deleteStartTime(){
             headers: {'Content-type': 'application/json'},
             body: JSON.stringify({
                 'startTimeIdFromJSFile': startId
+            })
+        })
+        const data = await response.json()
+        console.log(data)
+        location.reload()
+    }catch(err){
+        console.log(err)
+    }
+}
+
+async function deleteFinishTime(){
+    console.log('I am running')
+    const finishId = this.parentNode.dataset.id
+    try{
+        const response = await fetch('jobs/deleteFinishTime', {
+            method: 'delete',
+            headers: {'Content-type': 'application/json'},
+            body: JSON.stringify({
+                'finishTimeIdFromJSFile': finishId
             })
         })
         const data = await response.json()

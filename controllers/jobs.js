@@ -2,21 +2,23 @@ const Job = require('../models/Job')
 // const  calcRoute = require('../public/js/main.js').calcRoute;
 const StartTime = require('../models/StartTime')
 const StartLocation = require('../models/StartLocation')
+const FinishTime = require('../models/FinishTime')
 
 module.exports = {
     getJobs: async (req,res)=>{
         console.log(req.user)
         try{
             const jobItems = await Job.find({company:req.user.company})
-            const itemsLeft = await Job.countDocuments({userId:req.user.id,completed: false})
             let date = new Date()
             let dateString = date.toISOString().slice(0, 10)
             console.log(req.user.id)
             console.log(dateString)
             const startTime = await StartTime.findOne({workerId: req.user.id, date: dateString})
             console.log('starttime:' + startTime)
+            const finishTime = await FinishTime.findOne({workerId: req.user.id, date: dateString})
+            console.log('finishTime: ', finishTime)
             const startLocation = await StartLocation.findOne({workerId: req.user.id, date: dateString})
-            res.render('jobs.ejs', {jobs: jobItems, user: req.user, startTime: startTime, startLocation: startLocation})
+            res.render('jobs.ejs', {jobs: jobItems, user: req.user, startTime: startTime, startLocation: startLocation, finishTime: finishTime})
 
         }catch(err){
             console.log(err)
@@ -87,7 +89,11 @@ module.exports = {
     addStartTime: async (req, res)=>{
         try{
             console.log(req)
-            let startTimeFormatted = `${req.body.startHour}:${req.body.startMinute}`;
+            let formatedStartMinute = req.body.startMinute
+            if (formatedStartMinute < 10) {
+                formatedStartMinute = '0' + formatedStartMinute
+            }
+            let startTimeFormatted = `${req.body.startHour}:${formatedStartMinute}`;
             console.log('startTimeFormatted: ' + startTimeFormatted )
             const date = new Date();
             let dateString = date.toISOString().slice(0, 10)
@@ -112,5 +118,34 @@ module.exports = {
         }catch(err){
             console.log(err)
         }     
-    }
+    },
+    addFinishTime: async (req, res)=>{
+        try{
+            console.log(req)
+            let formatedFinishMinute = req.body.finishMinute
+            if (formatedFinishMinute < 10) {
+                formatedFinishMinute = '0' + req.body.finishMinute
+            }
+            let finishTimeFormatted = `${req.body.finishHour}:${formatedFinishMinute}`;
+            console.log('finishTimeFormatted: ' + finishTimeFormatted )
+            const date = new Date();
+            let dateString = date.toISOString().slice(0, 10)
+            console.log('date: ' + date)
+            await FinishTime.create({finishTime: finishTimeFormatted, workerId: req.user.id, company: req.user.company, date: dateString})
+            console.log('finish time has been added!')
+            res.redirect('/jobs')
+        }catch(err){
+            console.log(err)
+        }     
+    },
+    deleteFinishTime: async (req, res)=>{
+        console.log('req.body.finishTimeIdFromJSFile', req.body.finishTimeIdFromJSFile)
+        try{
+            await FinishTime.findOneAndDelete({_id:req.body.finishTimeIdFromJSFile})
+            console.log('Deleted Todo')
+            res.json('Deleted It')
+        }catch(err){
+            console.log(err)
+        }
+    },
 }    

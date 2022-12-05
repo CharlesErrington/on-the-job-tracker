@@ -21,4 +21,8 @@ router.post('/startTime', jobsController.addStartTime)
 
 router.post('/addStartLocation', jobsController.addStartLocation)
 
+router.post('/finishTime', jobsController.addFinishTime)
+
+router.delete('/deleteFinishTime', jobsController.deleteFinishTime)
+
 module.exports = router
