@@ -32,7 +32,8 @@ Array.from(deleteBtnFinishTime).forEach((el) => {
 })
 
 async function deleteJob(){
-    const jobId = this.parentNode.dataset.id
+    const jobId = this.parentNode.parentNode.dataset.id
+    console.log('jobId ', jobId)
     try{
         const response = await fetch('jobs/deleteJob', {
             method: 'delete',
@@ -160,10 +161,10 @@ async function markIncomplete(){
 
 //set map options
 
-var myLatLng = { lat: 38.3460, lng: -0.4907 };
+var myLatLng = { lat: 51.509865, lng: -0.118092 };
 var mapOptions = {
     center: myLatLng,
-    zoom: 7,
+    zoom: 9,
     mapTypeId: google.maps.MapTypeId.ROADMAP
 
 };
@@ -224,7 +225,7 @@ function calcRoute() {
         const text = postcodeElements[i].innerText;
         console.log('postcodestext', text)
         // Extract the postcode from the text (assumes the postcode is the second word in the text)
-        const postcode = text.split(' ')[1];
+        const postcode = text.split(' ')[0];
 
         // Get the checkbox element with the corresponding id
         const checkbox = postcodeElements[i].previousElementSibling
@@ -248,7 +249,7 @@ function calcRoute() {
     }));
 
     // Select all <span> elements containing the estimated job length
-    const lengthElements = spanArray.filter(element => element.innerText.includes('Estimated job length:'));
+    const lengthElements = spanArray.filter(element => element.classList.contains('jobLengthSpan'));
     console.log('lengthElements ', lengthElements)
     // Create an array to store the estimated job lengths
     const lengths = [];
@@ -261,7 +262,7 @@ function calcRoute() {
         console.log(`text ${text}`)
 
         // Extract the hours and minutes from the text
-        const [hours, minutes] = [text.split(' ')[3], text.split(' ')[5]]
+        const [hours, minutes] = [text.split(' ')[0], text.split(' ')[2]]
 
         // Get the checkbox element with the corresponding id
         const checkbox = lengthElements[i].previousElementSibling;
@@ -406,17 +407,38 @@ function calcRoute() {
             console.log('diffString.split(\':\')[0] ', diffString.split(':')[0])
             //See if the hours of the day are greater than the estimated hours alert
             if (+durationCheck.split(':')[0] > +diffString.split(':')[0]) {
+                alert('hello')
                 document.querySelector('#finishTimeWarning').innerText = "With this many jobs you will be home later than you are aiming for, consider unchecking one or more jobs and calculating again"
             } else if (+durationCheck.split(':')[0] == +diffString.split(':')[0] && +durationCheck.split(':')[1] > +diffString.split(':')[1]) {
+                alert('hello')
                 document.querySelector('#finishTimeWarning').innerText = "With this many jobs you will be home later than you are aiming for, consider unchecking one or more jobs and calculating again"
             }
             
+            // Get the container holding the output element that is currently hidden
+            const outputHolder = document.getElementById('outputHolder')
+
+            //remove the hidden class from it
+            outputHolder.classList.remove("hide");
 
             // Get the output element
             const output = document.querySelector('#output');
 
+            //convert the distance to miles
+            const distanceInMiles = Math.round(distance * 0.000621371)
+
+            displayFinishHour = finishHour
+
+            if (displayFinishHour < 10) {
+                displayFinishHour = '0' + displayFinishHour
+            }
+
+            displayFinishTime = displayFinishHour + ':' + finishMinutes
+
+
             // Update the output with the total distance and duration
-            output.innerHTML = "<div class='alert-info'>Total distance: " + distance + ".<br />Total duration: " + durationString + ".<br />Finish Time: " + finishTime + ".</div>";
+            output.innerHTML = "<div class='alert-info'><h3>Total distance: </h3><span>" + distanceInMiles + " miles.</span><h3>Total duration: </h3><span>" + durationString + ".</span><h3>Finish Time: </h3><span class='time'>" + displayFinishTime + "</span></div>";
+
+            
 
             // Display the route on the map
             directionsDisplay.setDirections(result);
@@ -431,6 +453,8 @@ function calcRoute() {
         }
     });
 }
+
+
 
 
 

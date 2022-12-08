@@ -27,7 +27,8 @@ module.exports = {
     createJob: async (req, res)=>{
         try{
             console.log(req)
-            await Job.create({postCode: req.body.postCode, completed: false, customerId: req.body.customerId, workerId: req.user.id, company: req.user.company, estimatedJobLengthHours: req.body.hours, estimatedJobLengthMinutes: req.body.minutes})
+            const postcode = req.body.postCode.split(' ').join('').toUpperCase()
+            await Job.create({postCode: postcode, completed: false, customerId: req.body.customerId, workerId: req.user.id, company: req.user.company, estimatedJobLengthHours: req.body.hours, estimatedJobLengthMinutes: req.body.minutes})
             console.log('job has been added!')
             res.redirect('/jobs')
         }catch(err){

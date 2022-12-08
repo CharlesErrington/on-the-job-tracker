@@ -12,7 +12,10 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div class="body-container">
+
+        <a class="clearfix" id="logout" href="/logout">Logout</a>
+
+    <div class="body-container clearfix">
         <div class="input-container">
             <div>
                 <div class="grid-container">
@@ -22,7 +25,7 @@
                     <% if (startTime) { %>
                         <!-- Display the start time -->
                         <li class='start-time' data-id='<%=startTime._id%>'>
-                        <span id="startTimeSpan"><%= startTime.startTime %></span>
+                        <span class="time" id="startTimeSpan"><%= startTime.startTime %></span>
                         
                         </li>
                         <span class='delStartTime'><i class="fas fa-trash"></i></span>
@@ -86,7 +89,7 @@
                 <% if (finishTime) { %>
                     <!-- Display the start time -->
                     <li class='finish-time'data-id='<%=finishTime._id%>'>
-                    <span id="finishTimeSpan"><%= finishTime.finishTime %></span>
+                    <span class="time" id="finishTimeSpan"><%= finishTime.finishTime %></span>
                     
                     </li>
                     <span class='delFinishTime'><i class="fas fa-trash"></i></span>
@@ -168,7 +171,7 @@
             <h1>Jobs</h1>
             <p id="finishTimeWarning"></p>
             <ul>
-                    <div class="grid-container">
+                    <div class="job-grid-container">
                         <h3>Postcode</h3>
                         <h3>Estimated Job Length</h3>
                         <h3></h3>
@@ -178,14 +181,14 @@
                         <div class="job-item">
                             
                             <li class='jobItem' data-id='<%=el._id%>'>
-                                <div class="grid-container">
+                                <div class="job-grid-container">
                                     
                                     
-                                    <span class="postcodeParent"><input type="checkbox" id="<%= el._id %>" class="job-checkbox" checked><span class="postcodeSpan">Postcode: <%= el.postCode %> </span></span>
+                                    <span class="postcodeParent"><input type="checkbox" id="<%= el._id %>" class="job-checkbox" checked><span class="postcodeSpan"><%= el.postCode %> </span></span>
                                     
                                     
                                     
-                                    <span>Estimated job length: <%= el.estimatedJobLengthHours %> Hours <%= el.estimatedJobLengthMinutes %> Minutes </span>
+                                    <span class="jobLengthSpan"><%= el.estimatedJobLengthHours %> Hours <%= el.estimatedJobLengthMinutes %> Minutes </span>
                                     
                                     <span class='del'><i class="fas fa-trash"></i></span>
                                 </div>
@@ -199,71 +202,79 @@
         
 
         
-
-        <form action="/jobs/createJob" method='POST'>
-            <input type="text" placeholder="Enter jobs postcode" name='postCode'>
-            <input type="text" placeholder="Enter customer ID" name='customerId'>
-            <label for="hours">Estimated job length (hours):</label>
-            <select id="hours" name="hours">
-                <option value="0">0</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
-                <option value="10">10</option>
-                <option value="11">11</option>
-                <option value="12">12</option>
-            </select>
-            <label for="minutes">Estimated job length (minutes):</label>
-            <select id="minutes" name="minutes">
-                <option value="0">00</option>
-                <option value="5">05</option>
-                <option value="10">10</option>
-                <option value="15">15</option>
-                <option value="20">20</option>
-                <option value="25">25</option>
-                <option value="30">30</option>
-                <option value="35">35</option>
-                <option value="40">40</option>
-                <option value="45">45</option>
-                <option value="50">50</option>
-                <option value="55">55</option>
-            </select>
-            <input type="submit">
-        </form>
+        <div class="input-container">
+            <h2>Add New Job</h2>
+            <form id="createJobForm" action="/jobs/createJob" method='POST'>
+                <div id="jobCreationOptions">
+                    <input type="text" placeholder="Enter The Job's Postcode" name='postCode'><br>
+                    <input type="text" placeholder="Enter Customer ID" name='customerId'><br/>
+                    <!-- <label for="hours">Estimated job length (hours):</label> -->
+                    
+                    <select id="hours" name="hours">
+                        <option value=”” disabled selected>Estimated job length (hours)</option>
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                    </select><br/>
+                    <!-- <label for="minutes">Estimated job length (minutes):</label> -->
+                    <select id="minutes" name="minutes">
+                        <option value=”” disabled selected>Estimated job length (minutes)</option>
+                        <option value="0">00</option>
+                        <option value="5">05</option>
+                        <option value="10">10</option>
+                        <option value="15">15</option>
+                        <option value="20">20</option>
+                        <option value="25">25</option>
+                        <option value="30">30</option>
+                        <option value="35">35</option>
+                        <option value="40">40</option>
+                        <option value="45">45</option>
+                        <option value="50">50</option>
+                        <option value="55">55</option>
+                    </select>
+                </div><br/>
+                <input id="jobCreationSubmitButton" type="submit">
+            </form>
+        </div>
 
 
         
-
-        <div class="jumbotron">
-            <div class="container-fluid">
-
         
-                <h1>Calculate job time</h1>
+            <div class="jumbotron">
                 
-                <div class="col-xs-offset-2 col-xs-10">
-                    <button id="routebtn" class="btn btn-info btn-lg"><i class="fa-solid fa-diamond-turn-right"></i></button>
+                <div class="container-fluid">
+                    <div id="googleMap"></div>
+                    
                 </div>
-            </div>
-            <div class="container-fluid">
-                <div id="googleMap"></div>
-                <div id="output">
-
+                <div class="col-xs-offset-2 col-xs-10 buttonHolder">
+                    <button id="routebtn" class="">Calculate Day's Length</button>
+                </div>
+                <div id="outputHolder" class="input-container hide">
+                    <div class="container-fluid">
+                    
+                        <div id="output"></div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <a href="/logout">Logout</a>
 
+
+        <script src="https://cdn.jsdelivr.net/npm/placeholder-shim@1.0.4/dist/placeholder-shim.min.js"></script>
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3fGF38PYrTPfqMOqZzkdE94cgnvn07GQ&libraries=places"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
         <script src="js/main.js"></script>
-        </div>   
+
     </body>
      
 </html>
