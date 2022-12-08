@@ -1,5 +1,77 @@
-h1{
-    color: red;
+@font-face {
+    font-family: myFont;
+    src: url(../css/ds_digital/DS-DIGIB.TTF);
+}
+
+body {
+    /* background-image: url(); */
+    
+    
+    background: linear-gradient(rgba(255,255,255,0), rgba(255,255,255,0)), url('../images/nature4.png');
+    background-attachment: fixed;
+    background-position: center;
+    background-size: cover;
+}
+
+.body-container {
+    
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 30px auto;
+    padding: 20px;
+    width: calc(800px - 40px);
+    color: #333;
+    opacity: 0.99;
+    border-radius: 15px;
+    backdrop-filter: blur(14px) saturate(180%);
+    -webkit-backdrop-filter: blur(14px) saturate(180%);
+    background-color: rgba(255, 255, 255, 0.75);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.125);
+
+}
+
+@media (max-width: 840px) {
+    .body-container {
+      width: 90%;
+    }
+  }
+  
+@media (min-width: 841px)  {
+    .body-container {
+        width: 800px;
+    }
+}
+
+.input-container {
+    background-color: white;
+    padding: 5px 20px;
+    margin: 20px 0;
+    border-radius: 15px;
+    border: solid 1px #e6e6e6;
+    box-shadow: 4px 4px 20px 1px rgba(0,0,0,0.52);
+    -webkit-box-shadow: 4px 4px 20px 1px rgba(0,0,0,0.52);
+    -moz-box-shadow: 4px 4px 20px 1px rgba(0,0,0,0.52);
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: center;
+}
+
+.grid-container li {
+
+        display: flex !important;
+        align-items: center !important;
+        margin-bottom: 0 !important;
+}
+
+h1, h2 {
+    font-family: 'Helvetica Neue', sans-serif;
+    color: #999999;
+    margin: 10px 0;
+    font-size: 20px;
+
 }
 .completed{
     text-decoration: line-through;
@@ -26,3 +98,89 @@ h1{
 div.job-item {
     display: block !important;
   }
+
+select {
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+li.jobItem {
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+
+
+label {
+    margin-right: 10px;
+}
+
+span {
+    margin-right: 10px;
+}
+
+input.job-checkbox {
+    margin-right: 5px;
+    padding: 5px;
+}
+
+li.start-time, li.finish-time {
+    padding: 10px;
+    margin: 0 auto;
+    margin-bottom: 10px;
+}
+
+li.start-time span, li.finish-time span {
+    margin-right: 10px;
+}
+
+form {
+    margin-bottom: 20px;
+}
+
+li.start-location {
+    
+    background-color: #fff;
+    padding: 10px;
+    margin: 0 auto;
+    margin-bottom: 10px;
+}
+
+form {
+    margin-bottom: 20px;
+}
+
+ul {
+    
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+li.jobItem {
+    margin-bottom: 10px;
+    list-style: none !important;
+}
+
+p#finishTimeWarning {
+    
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+li {
+    list-style: none !important;
+}
+
+i {
+    float: right;
+}
+
+.start-time span, .finish-time span  {
+    font-family: myFont;
+    font-size: 30px;
+}
+
+.start-location span {
+    font-size: 20px;
+
+}

@@ -51,7 +51,19 @@ async function deleteJob(){
 
 async function deleteStartTime(){
     console.log('I am running')
-    const startId = this.parentNode.dataset.id
+    // const startId = this.parentNode.dataset.id
+
+    // Get the <li> element that contains the delete button
+    const startItem = this.previousElementSibling
+    console.log('startItem ', startItem)
+
+    // Get the job ID from the data-id attribute of the <li> element
+    const startId = startItem.getAttribute('data-id')
+    console.log('startId ', startId)
+
+    
+
+    console.log('startId ', startId)
     try{
         const response = await fetch('jobs/deleteStartTime', {
             method: 'delete',
@@ -70,7 +82,9 @@ async function deleteStartTime(){
 
 async function deleteFinishTime(){
     console.log('I am running')
-    const finishId = this.parentNode.dataset.id
+    const finishItem = this.previousElementSibling
+
+    const finishId = finishItem.getAttribute('data-id')
     try{
         const response = await fetch('jobs/deleteFinishTime', {
             method: 'delete',
@@ -89,7 +103,9 @@ async function deleteFinishTime(){
 
 async function deleteStartLocation(){
     console.log('I am running')
-    const startLocationId = this.parentNode.dataset.id
+
+    const startLocotionItem = this.previousElementSibling
+    const startLocationId = startLocotionItem.getAttribute('data-id')
     try{
         const response = await fetch('jobs/deleteStartLocation', {
             method: 'delete',
@@ -174,13 +190,22 @@ function calcRoute() {
     // Convert the NodeList to an array
     const spanArray = Array.from(spanElements);
 
+    console.log('spanArray ', spanArray)
 
-    const startLocation = spanArray.filter(element => element.innerText.includes('Start Location:')).map(el => el.innerText.split(' '))[0][2]
+
+    const startLocation = spanArray.find(element => element.id === 'startLocationSpan').innerText;
+    console.log('startLocation test: ', startLocation)
+    const startLocationInnerText = startLocation.innerText
+    console.log('startLocationInnerText ', startLocationInnerText)
 
     // Filter the list of <span> elements by their text content
-    const postcodeElements = spanArray.filter(element => element.innerText.includes('Postcode:'));
+    const postcodeElements = spanArray.filter(element => element.classList.contains('postcodeSpan'));
+    console.log('postcodeElements', postcodeElements)
+   
 
-    const startTime = spanArray.filter(element => element.innerText.includes('Start Time:')).map(el => el.innerText.split(' '))[0][2]
+    const startTime = document.getElementById('startTimeSpan').innerText
+    // const startTime = spanArray.filter(element => element.innerText.includes('Start Time:')).map(el => el.innerText.split(' '))[0]
+    console.log('startTime ', startTime)
     const startHour = startTime.split(':')[0]
     const startMinutes = startTime.split(':')[1]
 
@@ -191,24 +216,29 @@ function calcRoute() {
     // Create an array to store the postcodes
     const postcodes = [];
 
+   
     // Loop through the selected elements and extract the postcodes
     for (let i = 0; i < postcodeElements.length; i++) {
         // Get the text inside the <span> element
+        console.log('postcodeElements[i] ', postcodeElements[i])
         const text = postcodeElements[i].innerText;
-
+        console.log('postcodestext', text)
         // Extract the postcode from the text (assumes the postcode is the second word in the text)
         const postcode = text.split(' ')[1];
 
         // Get the checkbox element with the corresponding id
-        const checkbox = document.getElementById(postcodeElements[i].parentElement.dataset.id);
+        const checkbox = postcodeElements[i].previousElementSibling
+        console.log('postcode checkbox ', checkbox)
 
         // Check if the checkbox is checked
         if (checkbox.checked) {
-
+            console.log('this is the postcode checkbox and its checked')
         // Add the postcode to the array if the checkbox is checked
             postcodes.push(postcode);
         }
     }
+
+    
 
     // Create an array of waypoints from the postcodes
     const waypoints = postcodes.map(postcode => ({
@@ -219,13 +249,14 @@ function calcRoute() {
 
     // Select all <span> elements containing the estimated job length
     const lengthElements = spanArray.filter(element => element.innerText.includes('Estimated job length:'));
-
+    console.log('lengthElements ', lengthElements)
     // Create an array to store the estimated job lengths
     const lengths = [];
 
     // Loop through the selected elements and extract the estimated job lengths
     for (let i = 0; i < lengthElements.length; i++) {
-        // Get the text inside the <span> element
+        console.log(`lengthElements[${i}] `, lengthElements[i])
+        // Get the text inside the <span> elemeint
         const text = lengthElements[i].innerText;
         console.log(`text ${text}`)
 
@@ -233,11 +264,14 @@ function calcRoute() {
         const [hours, minutes] = [text.split(' ')[3], text.split(' ')[5]]
 
         // Get the checkbox element with the corresponding id
-        const checkbox = document.getElementById(lengthElements[i].parentElement.dataset.id);
+        const checkbox = lengthElements[i].previousElementSibling;
+        console.log('length checkbox', checkbox)
+
 
         // Check if the checkbox is checked
-        if (checkbox.checked) {
+        if (checkbox.querySelector('input').checked) {
         // Add the hours and minutes to the array if the checkbox is checked
+            console.log('ima checked')
             lengths.push({ hours: Number(hours), minutes: Number(minutes) });
         };
     }
@@ -323,6 +357,60 @@ function calcRoute() {
             // Create a string with the hours and minutes
             const durationString = hours + " hours " + minutes + " minutes";
             const finishTime = finishHour + ':' + finishMinutes
+
+            //Get the finish time from the document in order to compare it to the calculated finish time
+            let finishTimeSetByWorker = document.getElementById('finishTimeSpan').innerText;
+            console.log('finishTimeSetByWorker', finishTimeSetByWorker)
+
+            console.log('startTime ', startTime)
+            // Convert the starttime and the finishTimeSetByWorker strings to Date objects
+            const date1 = new Date(`1970-01-01T${startTime}`);
+            const date2 = new Date(`1970-01-01T${finishTimeSetByWorker}`);
+            console.log('date1 ', date1)
+            
+            // Get the hour and minute components of each time
+            const hour1 = date1.getHours();
+            const minute1 = date1.getMinutes();
+            const hour2 = date2.getHours();
+            const minute2 = date2.getMinutes();
+
+            console.log('hour1 ', hour1)
+            console.log('minute1 ', minute1)
+            console.log('hour2 ', hour2)
+            console.log('minute2 ', minute2)
+
+            // Calculate the difference between the hours and minutes of the two times
+            let hourDiff = hour2 - hour1;
+            let minuteDiff = 0;
+            if (minute1 > minute2) {
+            // If minute1 is greater than minute2, subtract minute1 from 60 and then minute2 from the result
+            // This gives the correct difference between the minutes in the 'hh:mm' format
+            minuteDiff = 60 - minute1 + minute2;
+            // Decrement hourDiff by 1 to take into account the fact that an extra hour has been borrowed to calculate the minutes difference
+            hourDiff -= 1;
+            } else {
+            // If minute1 is less than or equal to minute2, simply subtract minute1 from minute2
+            minuteDiff = minute2 - minute1;
+            }
+
+            // Convert the difference in hours and minutes to the 'hh:mm' format using Math.floor() and Math.abs()
+            const hourDiffAbs = Math.floor(Math.abs(hourDiff));
+            const hourString = hourDiffAbs < 10 ? `0${hourDiffAbs}` : `${hourDiffAbs}`;
+            const minuteString = minuteDiff < 10 ? `0${minuteDiff}` : `${minuteDiff}`;
+            const diffString = `${hourString}:${minuteString}`;
+
+            // Print the formatted difference between the two times
+            let durationCheck = hours + ':' + minutes;
+
+            console.log('durationString.split(\':\')[0] ', durationString.split(':')[0])
+            console.log('diffString.split(\':\')[0] ', diffString.split(':')[0])
+            //See if the hours of the day are greater than the estimated hours alert
+            if (+durationCheck.split(':')[0] > +diffString.split(':')[0]) {
+                document.querySelector('#finishTimeWarning').innerText = "With this many jobs you will be home later than you are aiming for, consider unchecking one or more jobs and calculating again"
+            } else if (+durationCheck.split(':')[0] == +diffString.split(':')[0] && +durationCheck.split(':')[1] > +diffString.split(':')[1]) {
+                document.querySelector('#finishTimeWarning').innerText = "With this many jobs you will be home later than you are aiming for, consider unchecking one or more jobs and calculating again"
+            }
+            
 
             // Get the output element
             const output = document.querySelector('#output');

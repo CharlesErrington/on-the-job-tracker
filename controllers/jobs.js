@@ -93,7 +93,11 @@ module.exports = {
             if (formatedStartMinute < 10) {
                 formatedStartMinute = '0' + formatedStartMinute
             }
-            let startTimeFormatted = `${req.body.startHour}:${formatedStartMinute}`;
+            let formatedStartHour = req.body.startHour
+            if (formatedStartHour < 10) {
+                formatedStartHour = '0' + formatedStartHour
+            }
+            let startTimeFormatted = `${formatedStartHour}:${formatedStartMinute}`;
             console.log('startTimeFormatted: ' + startTimeFormatted )
             const date = new Date();
             let dateString = date.toISOString().slice(0, 10)
@@ -108,7 +112,7 @@ module.exports = {
     addStartLocation: async (req, res)=>{
         try{
             console.log(req)
-            let startLocation = `${req.body.startLocation}`;
+            let startLocation = `${req.body.startLocation.split(' ').join('').toUpperCase()}`;
             const date = new Date();
             let dateString = date.toISOString().slice(0, 10)
             console.log('date: ' + date)
@@ -126,7 +130,11 @@ module.exports = {
             if (formatedFinishMinute < 10) {
                 formatedFinishMinute = '0' + req.body.finishMinute
             }
-            let finishTimeFormatted = `${req.body.finishHour}:${formatedFinishMinute}`;
+            let formatedFinishHour = req.body.finishHour
+            if (formatedFinishHour < 10) {
+                formatedFinishHour = '0' + req.body.finishHour
+            }
+            let finishTimeFormatted = `${formatedFinishHour}:${formatedFinishMinute}`;
             console.log('finishTimeFormatted: ' + finishTimeFormatted )
             const date = new Date();
             let dateString = date.toISOString().slice(0, 10)
