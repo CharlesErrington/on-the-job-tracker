@@ -25,4 +25,8 @@ router.post('/finishTime', jobsController.addFinishTime)
 
 router.delete('/deleteFinishTime', jobsController.deleteFinishTime)
 
+router.put('/changeJobOrderUp', jobsController.changeJobOrderUp)
+
+router.put('/changeJobOrderDown', jobsController.changeJobOrderDown)
+
 module.exports = router

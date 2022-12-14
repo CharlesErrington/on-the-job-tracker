@@ -16,9 +16,6 @@
     }
 }
 body {
-    /* background-image: url(); */
-    
-    
     background: linear-gradient(rgba(255,255,255,0), rgba(255,255,255,0)), url('../images/nature4.png');
     background-attachment: fixed;
     background-position: center;
@@ -73,7 +70,7 @@ body {
 
 .job-grid-container {
     display: grid;
-    grid-template-columns: 1fr 2fr 0.2fr;
+    grid-template-columns: 1fr 2fr 0.2fr 0.2fr;
     align-items: center;
     grid-gap: 10px;
 }
@@ -119,7 +116,14 @@ h1, h2, h3{
     box-shadow: 4px 4px 20px 1px rgba(0,0,0,0.52);
     -webkit-box-shadow: 4px 4px 20px 1px rgba(0,0,0,0.52);
     -moz-box-shadow: 4px 4px 20px 1px rgba(0,0,0,0.52);
+    transform: scale(1);
+    transition: transform 0.3s ease-in-out;
+    z-index: 10;
+}
 
+#googleMap:hover {
+    transform: scale(1.5);
+    max-width: 100%;
 }
 
 .jobList {
@@ -136,9 +140,28 @@ select {
 }
 
 li.jobItem {
-    /* border: 1px solid #ccc; */
-    padding: 10px;
+    border: 2px solid #eaebea;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 30px 0;
+    transform: scale(1);
+    transition: transform 0.2s ease-in-out;
 }
+
+li.jobItem:hover {
+    /* border: 1px solid #ccc; */
+
+    transform: scale(1.1);
+    
+    border: 1px solid #6c62ff;
+    background-color: #6c62ff;
+    color: white;
+    border-radius: 8px;
+    box-shadow: 4px 4px 20px 1px rgba(0,0,0,0.52);
+    -webkit-box-shadow: 4px 4px 20px 1px rgba(0,0,0,0.52);
+    -moz-box-shadow: 4px 4px 20px 1px rgba(0,0,0,0.52);
+}
+
 
 
 
@@ -221,7 +244,7 @@ i:hover {
 
 .time {
     font-family: myFont;
-    font-size: 30px;
+    font-size: 30px !important;
 }
 
 .start-location span {
@@ -231,7 +254,7 @@ i:hover {
 
 #createJobForm {
     width: 80%;
-    margin: 30px auto;
+    margin: 50px auto;
    
 }
 
@@ -239,7 +262,26 @@ i:hover {
     border-collapse: separate; 
     border-radius: 8px;  /* This sets the border radius of the element */
     perspective: 1px;
-    
+    transform: scale(1);
+  }
+
+  #createJobForm #jobCreationOptions > * {
+    transform: scale(1);
+  }
+
+  #createJobForm #jobCreationOptions > *:hover {
+    transform: scale(1.02);
+    border-radius: 8px;
+  }
+
+  #jobCreationOptions :first-child {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+  }
+
+  #jobCreationOptions :nth-child(7) {
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
   }
   
 
@@ -263,9 +305,8 @@ i:hover {
     border-radius: 10px;
     font-size: 25px;
     /* background-color: rgba(255, 255, 255, 0.5); */
-    box-shadow: 4px 4px 20px 1px rgba(0,0,0,0.52);
-    -webkit-box-shadow: 4px 4px 20px 1px rgba(0,0,0,0.52);
-    -moz-box-shadow: 4px 4px 20px 1px rgba(0,0,0,0.52);
+    transform: scale(1);
+    
 }
 
 
@@ -273,12 +314,18 @@ i:hover {
    background-color: #7b72ff !important;
     /* background-color: #b3b3ff !important; */
     /* background-color: rgba(255, 255, 255, 0.2); */
+    box-shadow: 4px 4px 20px 1px rgba(0,0,0,0.52);
+    -webkit-box-shadow: 4px 4px 20px 1px rgba(0,0,0,0.52);
+    -moz-box-shadow: 4px 4px 20px 1px rgba(0,0,0,0.52);
+    transform: scale(1.02);
 } 
 
 #logout {
     float: right;
     margin-right: 20px;
+
 }
+
 
 .buttonHolder {
     display: flex;  /* Set the display to flex */
@@ -286,7 +333,7 @@ i:hover {
     margin-bottom: 30px;
 }
 
-button {
+#routebtn {
     width: 78%;
     margin: 0 auto !important;
     background-color: #ffb662;
@@ -298,10 +345,13 @@ button {
     -webkit-box-shadow: 4px 4px 20px 1px rgba(0,0,0,0.52);
     -moz-box-shadow: 4px 4px 20px 1px rgba(0,0,0,0.52);
     font-size: 25px;
+    transform: scale(1);
+    z-index: 5;
 }
 
-button:hover {
+#routebtn:hover {
     background-color:#ffbd72 ;
+    transform: scale(1.02);
 }
 
 .hide {
@@ -314,14 +364,16 @@ button:hover {
     color: white;
     padding: 10px 30px;
     border-radius: 10px;
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: rgba(255, 255, 255, 0.2);
     box-shadow: 4px 4px 20px 1px rgba(0,0,0,0.52);
     -webkit-box-shadow: 4px 4px 20px 1px rgba(0,0,0,0.52);
     -moz-box-shadow: 4px 4px 20px 1px rgba(0,0,0,0.52);
+    transform: scale(1);
 }
 
 #logout:hover {
-    background-color: rgba(255, 255, 255, 0.7); 
+    background-color: rgba(255, 255, 255, 0.4); 
+    transform: scale(1.05);
 }
 
 .alert-info {
@@ -334,4 +386,78 @@ button:hover {
 
 .alert-info span{
     font-size: 20px;
+}
+
+input[type="checkbox"]:checked + label {
+    color: red;
+  }
+
+#finishTimeWarning {
+    color: red;
+}
+
+.alert {
+    background-color: #FE6D63 !important;
+    padding: 20px 40px;
+    position: fixed;
+    left: 0px;
+    border-radius: 4px;
+    border-left: #FE3E30 8px solid;
+    overflow: hidden;
+    z-index: 50;
+}
+
+.alert .fa-exclamation-circle {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #FA1201;
+    font-size: 30px;
+}
+
+.alert .msg {
+    padding: 0 20px;
+    font-size: 18px ;
+    color: white;
+}
+
+.alert .close-btn {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #FE3E30;
+    padding: 20px 18px;
+    margin: 0;
+}
+
+.close-btn .fa-times {
+    font-size: 22px;
+    line-height: 40px;
+    color: white ;
+    margin: 0 auto;
+}
+
+.close-btn:hover {
+    background-color: #FA1201;
+}
+
+.alert.show {
+    animation: show_slide 1s ease forwards;
+}
+
+@keyframes show_slide  {
+    0% {
+        transform: translateX(-100%) ;
+    }
+    40% {
+        transform: translateX(10%) ;
+    }
+    80% {
+        transform: translateX(0%) ;
+    }
+    100% {
+        transform: translateX(10%) ;
+    }
 }

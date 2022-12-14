@@ -8,7 +8,8 @@ module.exports = {
     getJobs: async (req,res)=>{
         console.log(req.user)
         try{
-            const jobItems = await Job.find({company:req.user.company})
+            const jobItems = await Job.find({company:req.user.company}).sort({ order: 1 });
+            console.log('these are the job items ', jobItems)
             let date = new Date()
             let dateString = date.toISOString().slice(0, 10)
             console.log(req.user.id)
@@ -18,6 +19,7 @@ module.exports = {
             const finishTime = await FinishTime.findOne({workerId: req.user.id, date: dateString})
             console.log('finishTime: ', finishTime)
             const startLocation = await StartLocation.findOne({workerId: req.user.id, date: dateString})
+            
             res.render('jobs.ejs', {jobs: jobItems, user: req.user, startTime: startTime, startLocation: startLocation, finishTime: finishTime})
 
         }catch(err){
@@ -26,11 +28,68 @@ module.exports = {
     },
     createJob: async (req, res)=>{
         try{
-            console.log(req)
-            const postcode = req.body.postCode.split(' ').join('').toUpperCase()
-            await Job.create({postCode: postcode, completed: false, customerId: req.body.customerId, workerId: req.user.id, company: req.user.company, estimatedJobLengthHours: req.body.hours, estimatedJobLengthMinutes: req.body.minutes})
+            // console.log(req)
+            const postcode = req.body.postCode
+                .split(' ')
+                .join('')
+                .toUpperCase();
+
+            const jobs = await Job.find({company:req.user.company }).sort({ order: -1 });
+            console.log('jobs ', jobs)
+
+            const highestOrder = jobs[0] ? jobs[0].order : 0;
+            console.log('highestOrder ', highestOrder)
+
+            await Job.create({
+                postCode: postcode, 
+                completed: false, 
+                customerId: req.body.customerId, 
+                workerId: req.user.id, 
+                company: req.user.company, 
+                estimatedJobLengthHours: req.body.hours, 
+                estimatedJobLengthMinutes: req.body.minutes, 
+                archived: false, 
+                order: highestOrder + 1
+            });
+      
             console.log('job has been added!')
             res.redirect('/jobs')
+            } catch(err){
+            console.log(err)
+            }
+    },
+    changeJobOrderUp: async (req,res) => {
+        try{
+            let order1 = req.body
+            console.log('order1 ', order1)
+            console.log('req.body.clickedJobOrder ', req.body.clickedJobOrder)
+            console.log('req.body.jobAboveOrder ', req.body.jobAboveOrder)
+            await Job.findOneAndUpdate({_id:req.body.jobAboveId}, {
+                order: req.body.clickedJobOrder
+            })
+            await Job.findOneAndUpdate({_id:req.body.clickedJobId}, {
+                order: req.body.jobAboveOrder
+            })
+            console.log('Marked Complete')
+            res.json('Marked Complete')
+        }catch(err){
+            console.log(err)
+        }
+    },
+    changeJobOrderDown: async (req,res) => {
+        try{
+            let order1 = req.body
+            console.log('order1 ', order1)
+            console.log('req.body.clickedJobOrder ', req.body.clickedJobOrder)
+            console.log('req.body.jobAboveOrder ', req.body.jobAboveOrder)
+            await Job.findOneAndUpdate({_id:req.body.jobBelowId}, {
+                order: req.body.clickedJobOrder
+            })
+            await Job.findOneAndUpdate({_id:req.body.clickedJobId}, {
+                order: req.body.jobBelowOrder
+            })
+            console.log('Marked Complete')
+            res.json('Marked Complete')
         }catch(err){
             console.log(err)
         }

@@ -6,13 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-    <link rel="stylesheet" href="../public/css/ds_digital/DS-DIGI.TTF" type="text/css">
+    <link rel="stylesheet" href="/css/ds_digital/DS-DIGI.TTF" type="text/css">
     <script src="https://kit.fontawesome.com/a79293c569.js" crossorigin="anonymous"></script>
 
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
 </head>
 <body>
+    <div class="alert show hide">
+        <span class="fas fa-exclamation-circle"></span>
+        <span class="msg">Warning: With this many jobs you will be home later than you are aiming for, consider unchecking one or more jobs and calculating again</span>
 
+        <span class="close-btn">
+            <span class="fas fa-times"></span>
+        </span>
+    </div>
         <a class="clearfix" id="logout" href="/logout">Logout</a>
 
     <div class="body-container clearfix">
@@ -167,6 +174,7 @@
             <% } %>
         </div>
 
+        
         <div class="input-container">
             <h1>Jobs</h1>
             <p id="finishTimeWarning"></p>
@@ -176,27 +184,98 @@
                         <h3>Estimated Job Length</h3>
                         <h3></h3>
                     </div>
-
-                    <% jobs.forEach( el => { %>
-                        <div class="job-item">
-                            
-                            <li class='jobItem' data-id='<%=el._id%>'>
-                                <div class="job-grid-container">
-                                    
-                                    
-                                    <span class="postcodeParent"><input type="checkbox" id="<%= el._id %>" class="job-checkbox" checked><span class="postcodeSpan"><%= el.postCode %> </span></span>
-                                    
-                                    
-                                    
-                                    <span class="jobLengthSpan"><%= el.estimatedJobLengthHours %> Hours <%= el.estimatedJobLengthMinutes %> Minutes </span>
-                                    
-                                    <span class='del'><i class="fas fa-trash"></i></span>
-                                </div>
+                    <!-- <div class="li-container">
+                        <% jobs.forEach( el => { %>
+                            <div class="job-item">
                                 
-                            </li>
+                                <li class='jobItem' data-id='<%=el._id%>'>
+                                    <div class="job-grid-container">
+                                        
+                                        
+                                        <span class="postcodeParent"><input type="checkbox" id="<%= el._id %>" class="job-checkbox" checked><span class="postcodeSpan"><%= el.postCode %> </span></span>
+                                        
+                                        
+                                        
+                                        <span class="jobLengthSpan"><%= el.estimatedJobLengthHours %> Hours <%= el.estimatedJobLengthMinutes %> Minutes </span>
+                                        <div class="button-container">
+                                            <button class="button-up">▲</button>
+                                            <button class="button-down">▼</button>
+                                        </div>
+                                        <span class="jobItemOrder hide" ><%= el.order %></span>
+                                        <span class='del'><i class="fas fa-trash"></i></span>
+                                    </div>
+                                    
+                                </li>
+                            </div>
+                        <% }) %>  
+                    </div>
+                     -->
+                     <div class="li-container">
+                        <% for (let i = 0; i < jobs.length; i++) { %>
+                            <% if (i === 0) { %>
+                                <div class="job-item">
+                                    <li class='jobItem' data-id='<%=jobs[i]._id%>'>
+                                      <div class="job-grid-container">
+                                        <span class="postcodeParent">
+                                          <input type="checkbox" id="<%= jobs[i]._id %>" class="job-checkbox" unchecked>
+                                          <span class="postcodeSpan"><%= jobs[i].postCode %> </span>
+                                        </span>
+                                        <span class="jobLengthSpan">
+                                          <%= jobs[i].estimatedJobLengthHours %> Hours <%= jobs[i].estimatedJobLengthMinutes %> Minutes
+                                        </span>
+                                        <div class="button-container">
+                                          <!-- <button class="button-up hide">▲</button> -->
+                                          <button class="button-down">▼</button>
+                                        </div>
+                                        <span class="jobItemOrder hide" ><%= jobs[i].order %></span>
+                                        <span class='del'><i class="fas fa-trash"></i></span>
+                                      </div>
+                                    </li>
+                                  </div>
+                            <% } else if (i === jobs.length - 1) { %>    
+                                <div class="job-item">
+                                    <li class='jobItem' data-id='<%=jobs[i]._id%>'>
+                                      <div class="job-grid-container">
+                                        <span class="postcodeParent">
+                                          <input type="checkbox" id="<%= jobs[i]._id %>" class="job-checkbox" unchecked>
+                                          <span class="postcodeSpan"><%= jobs[i].postCode %> </span>
+                                        </span>
+                                        <span class="jobLengthSpan">
+                                          <%= jobs[i].estimatedJobLengthHours %> Hours <%= jobs[i].estimatedJobLengthMinutes %> Minutes
+                                        </span>
+                                        <div class="button-container">
+                                          <button class="button-up">▲</button>
+                                          <!-- <button class="button-down">▼</button> -->
+                                        </div>
+                                        <span class="jobItemOrder hide" ><%= jobs[i].order %></span>
+                                        <span class='del'><i class="fas fa-trash"></i></span>
+                                      </div>
+                                    </li>
+                                  </div>
+                            <% } else { %>
+                                <div class="job-item">
+                                    <li class='jobItem' data-id='<%=jobs[i]._id%>'>
+                                      <div class="job-grid-container">
+                                        <span class="postcodeParent">
+                                          <input type="checkbox" id="<%= jobs[i]._id %>" class="job-checkbox" unchecked>
+                                          <span class="postcodeSpan"><%= jobs[i].postCode %> </span>
+                                        </span>
+                                        <span class="jobLengthSpan">
+                                          <%= jobs[i].estimatedJobLengthHours %> Hours <%= jobs[i].estimatedJobLengthMinutes %> Minutes
+                                        </span>
+                                        <div class="button-container">
+                                          <button class="button-up">▲</button>
+                                          <button class="button-down">▼</button>
+                                        </div>
+                                        <span class="jobItemOrder hide" ><%= jobs[i].order %></span>
+                                        <span class='del'><i class="fas fa-trash"></i></span>
+                                      </div>
+                                    </li>
+                                  </div>
+                                <% } %>
+                              
+                            <% } %>
                         </div>
-                    <% }) %>  
-                  
             </ul>
         </div>
         
@@ -259,6 +338,9 @@
                 <div class="col-xs-offset-2 col-xs-10 buttonHolder">
                     <button id="routebtn" class="">Calculate Day's Length</button>
                 </div>
+                <div id="lockItIn" class="col-xs-offset-2 col-xs-10 buttonHolder hide">
+                    <button class="">Lock It In</button>
+                </div>
                 <div id="outputHolder" class="input-container hide">
                     <div class="container-fluid">
                     
@@ -273,7 +355,7 @@
         <script src="https://cdn.jsdelivr.net/npm/placeholder-shim@1.0.4/dist/placeholder-shim.min.js"></script>
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3fGF38PYrTPfqMOqZzkdE94cgnvn07GQ&libraries=places"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-        <script src="js/main.js"></script>
+        <script src="/js/main.js"></script>
 
     </body>
      

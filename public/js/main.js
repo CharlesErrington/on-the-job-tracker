@@ -4,6 +4,11 @@ const todoComplete = document.querySelectorAll('span.completed')
 const deleteBtnStartTime = document.querySelectorAll('.delStartTime')
 const deleteBtnStartLocation = document.querySelectorAll('.delStartLocation')
 const deleteBtnFinishTime = document.querySelectorAll('.delFinishTime')
+const changeOrderUp = document.querySelectorAll('.button-up')
+const changeOrderDown = document.querySelectorAll('.button-down')
+const closeAlertButton = document.querySelector('.close-btn')
+
+closeAlertButton.addEventListener('click', closeAlert)
 
 document.querySelector("#routebtn").addEventListener('click', calcRoute)
 
@@ -30,6 +35,78 @@ Array.from(deleteBtnStartLocation).forEach((el) => {
 Array.from(deleteBtnFinishTime).forEach((el) => {
     el.addEventListener('click', deleteFinishTime)
 })
+
+
+Array.from(changeOrderUp).forEach((el) => {
+    el.addEventListener('click', changeJobOrderUp)
+})
+
+Array.from(changeOrderDown).forEach((el) => {
+    el.addEventListener('click', changeJobOrderDown)
+})
+
+function closeAlert() {
+    document.querySelector('.alert').classList.add('hide');
+}
+
+async function changeJobOrderDown() {
+    const jobBelow = this.parentNode.parentNode.parentNode.parentNode.nextElementSibling
+    const jobBelowLi = jobBelow.querySelector('li');
+    const jobBelowId = jobBelowLi.getAttribute('data-id');
+    const clickedJobId = this.parentNode.parentNode.parentNode.getAttribute('data-id')
+    const clickedJobOrder = this.parentNode.nextElementSibling.innerText
+    const jobBelowOrder = jobBelow.querySelector('.jobItemOrder').innerText
+
+    try {
+        const response = await fetch('jobs/changeJobOrderDown', {
+            method: 'put',
+            headers: {'Content-type': 'application/json'},
+            body: JSON.stringify({
+                'jobBelowId': jobBelowId,
+                'clickedJobId': clickedJobId,
+                'clickedJobOrder': clickedJobOrder,
+                'jobBelowOrder': jobBelowOrder
+            })
+        })
+        const data = await response.json()
+        console.log(data)
+        location.reload()
+        } catch(err){
+            console.log(err)
+    }
+}
+
+async function changeJobOrderUp() {
+    const jobAbove = this.parentNode.parentNode.parentNode.parentNode.previousElementSibling
+    const jobAboveLi = jobAbove.querySelector('li');
+    const jobAboveId = jobAboveLi.getAttribute('data-id');
+    console.log(jobAboveId);
+    const clickedJobId = this.parentNode.parentNode.parentNode.getAttribute('data-id')
+    console.log(clickedJobId)
+    const clickedJobOrder = this.parentNode.nextElementSibling.innerText
+    const jobAboveOrder =   jobAbove.querySelector('.jobItemOrder').innerText
+    console.log('clickedJobOrder ', clickedJobOrder)
+    console.log('jobAboveOrder ', jobAboveOrder)
+    try{
+        const response = await fetch('jobs/changeJobOrderUp', {
+            method: 'put',
+            headers: {'Content-type': 'application/json'},
+            body: JSON.stringify({
+                'jobAboveId':jobAboveId,
+                'jobAboveOrder': jobAboveOrder,
+                'clickedJobOrder': clickedJobOrder,
+                'clickedJobId': clickedJobId
+            })
+        })
+        const data = await response.json()
+        console.log(data)
+        location.reload()
+    } catch(err){
+        console.log(err)
+    }
+}
+
+
 
 async function deleteJob(){
     const jobId = this.parentNode.parentNode.dataset.id
@@ -191,28 +268,18 @@ function calcRoute() {
     // Convert the NodeList to an array
     const spanArray = Array.from(spanElements);
 
-    console.log('spanArray ', spanArray)
-
-
+    //Find the start location in the spanArray
     const startLocation = spanArray.find(element => element.id === 'startLocationSpan').innerText;
-    console.log('startLocation test: ', startLocation)
-    const startLocationInnerText = startLocation.innerText
-    console.log('startLocationInnerText ', startLocationInnerText)
 
     // Filter the list of <span> elements by their text content
     const postcodeElements = spanArray.filter(element => element.classList.contains('postcodeSpan'));
-    console.log('postcodeElements', postcodeElements)
    
-
+    //Get the startTime form the document
     const startTime = document.getElementById('startTimeSpan').innerText
-    // const startTime = spanArray.filter(element => element.innerText.includes('Start Time:')).map(el => el.innerText.split(' '))[0]
-    console.log('startTime ', startTime)
+
+    //Split the startTime into seperate hour and minute variables
     const startHour = startTime.split(':')[0]
     const startMinutes = startTime.split(':')[1]
-
-    console.log('startTime ', startTime)
-    console.log('startHour ', startHour)
-    console.log('startMinutes ', startMinutes)
 
     // Create an array to store the postcodes
     const postcodes = [];
@@ -253,6 +320,7 @@ function calcRoute() {
     console.log('lengthElements ', lengthElements)
     // Create an array to store the estimated job lengths
     const lengths = [];
+    const lengthsFormattedToHHMM = [];
 
     // Loop through the selected elements and extract the estimated job lengths
     for (let i = 0; i < lengthElements.length; i++) {
@@ -274,6 +342,7 @@ function calcRoute() {
         // Add the hours and minutes to the array if the checkbox is checked
             console.log('ima checked')
             lengths.push({ hours: Number(hours), minutes: Number(minutes) });
+            lengthsFormattedToHHMM.push(`${hours}:${minutes}`)
         };
     }
 
@@ -298,10 +367,108 @@ function calcRoute() {
             // Calculate the total distance and duration of the route
             let distance = 0;
             let duration = 0;
+            let durationLegArray = []
             for (const leg of result.routes[0].legs) {
                 distance += leg.distance.value;
                 duration += leg.duration.value;
+                durationLegArray.push(leg.duration.value)
             }
+
+            console.log('This is the durationLegArray ', durationLegArray)
+
+            // Convert the durations in the duration leg array to hours:minutes
+
+            durationLegArray = durationLegArray.map(el => {
+                const hours = Math.floor(el / 3600);
+                const minutes = Math.floor((el % 3600) / 60)
+                return `${hours}:${minutes}`
+            })
+
+            console.log('This is the durationLegArray converted to hours and minutes ', durationLegArray)
+            console.log('this is the lengths array ', lengths)
+            console.log('this is the formatted lengths array ', lengthsFormattedToHHMM)
+
+
+            //Calculate the arrival time at each address
+            let postcodeArrivalTimes = [];
+            let lastArrivalHour = '';
+            let lastArrivalMinute = '';
+        
+
+            for(let i = 0; i < postcodes.length; i++) {
+                if(i == 0) {
+
+                    //calculate the arrival time at the first job location
+                    let arrivalTimeHour = +startTime.split(':')[0] + +durationLegArray[i].split(':')[0]
+                    console.log('arrivalTimeHour summed [0]', arrivalTimeHour)
+                    
+                    
+                    console.log('arrivalTimeHour summed [0]', arrivalTimeHour)
+                    //calculate the arrival minute for the first location
+                    let arrivalTimeMinute = +startTime.split(':')[1] + +durationLegArray[i].split(':')[1]
+                    console.log('arrivalTimeMinute ', arrivalTimeMinute)
+
+                    //Correct the time if minutes go over 60
+                    if(arrivalTimeMinute > 60) {
+                        while(arrivalTimeMinute > 60) {
+                            arrivalTimeMinute -= 60
+                            arrivalTimeHour += 1
+                        }
+                    }
+                    //if the time goes past midnight set it back
+                    if(arrivalTimeHour > 23) {
+                        arrivalTimeHour -= 24
+                    }
+                    //Add the correct formatting for display if the minute is less than 10
+                    if(arrivalTimeMinute < 10) {
+                        arrivalTimeMinute = '0' + arrivalTimeMinute
+                    }
+                    
+                    //add the correct formatting for display if the hour is less than 10
+                    if(arrivalTimeHour < 10) {
+                        arrivalTimeHour = '0' + arrivalTimeHour
+                    }
+                    console.log('arrivalTimeMinute ', arrivalTimeMinute)
+                    lastArrivalHour = arrivalTimeHour
+                    lastArrivalMinute = arrivalTimeMinute
+                    postcodeArrivalTimes.push(`${arrivalTimeHour}:${arrivalTimeMinute}`)
+                } else {
+                    // console.log('+lastArrivalHour ', +lastArrivalHour)
+                    // console.log("+lengthsFormattedToHHMM[i - 1].split(':')[0] ", +lengthsFormattedToHHMM[i - 1].split(':')[0])
+                    // console.log("durationLegArray[i].split(':')[0] ", durationLegArray[i].split(':')[0])
+                    let arrivalTimeHour = +lastArrivalHour + +lengthsFormattedToHHMM[i - 1].split(':')[0] + +durationLegArray[i].split(':')[0]
+                    console.log(`arrivalTimeHour summed [${i}]`, arrivalTimeHour)
+                    let arrivalTimeMinute = +lastArrivalMinute + +lengthsFormattedToHHMM[i - 1].split(':')[1] + +durationLegArray[i].split(':')[1]
+                    console.log(`arrivalTimeMinute summed [${i}]`, arrivalTimeMinute)
+                    //Correct the time if minutes go over 60
+                    if(arrivalTimeMinute > 60) {
+                        while(arrivalTimeMinute > 60) {
+                            arrivalTimeMinute -= 60
+                            arrivalTimeHour += 1
+                        }
+                    }
+                    //if the time goes past midnight set it back
+                    if(arrivalTimeHour > 23) {
+                        arrivalTimeHour -= 24
+                    }
+                    //Add the correct formatting for display if the minute is less than 10
+                    if(arrivalTimeMinute < 10) {
+                        arrivalTimeMinute = '0' + arrivalTimeMinute
+                    }
+                    
+                    //add the correct formatting for display if the hour is less than 10
+                    if(arrivalTimeHour < 10) {
+                        arrivalTimeHour = '0' + arrivalTimeHour
+                    }
+                    console.log('arrivalTimeMinute ', arrivalTimeMinute)
+                    lastArrivalHour = arrivalTimeHour
+                    lastArrivalMinute = arrivalTimeMinute
+                    postcodeArrivalTimes.push(`${arrivalTimeHour}:${arrivalTimeMinute}`)
+
+                }
+            }
+
+            console.log('postcodeArrivalTimes postcodeArrivalTimes postcodeArrivalTimes ', postcodeArrivalTimes)
             
             // Declare the `hours` and `minutes` variables inside the callback function
             let hours = 0;
@@ -407,11 +574,16 @@ function calcRoute() {
             console.log('diffString.split(\':\')[0] ', diffString.split(':')[0])
             //See if the hours of the day are greater than the estimated hours alert
             if (+durationCheck.split(':')[0] > +diffString.split(':')[0]) {
-                alert('hello')
+
                 document.querySelector('#finishTimeWarning').innerText = "With this many jobs you will be home later than you are aiming for, consider unchecking one or more jobs and calculating again"
+                document.querySelector('.alert').classList.remove('hide');
             } else if (+durationCheck.split(':')[0] == +diffString.split(':')[0] && +durationCheck.split(':')[1] > +diffString.split(':')[1]) {
-                alert('hello')
+
                 document.querySelector('#finishTimeWarning').innerText = "With this many jobs you will be home later than you are aiming for, consider unchecking one or more jobs and calculating again"
+                document.querySelector('.alert').classList.remove('hide');
+            } else {
+                document.querySelector('#finishTimeWarning').style.display = 'none'
+                document.querySelector('.alert').classList.add('hide');
             }
             
             // Get the container holding the output element that is currently hidden
@@ -438,10 +610,18 @@ function calcRoute() {
             // Update the output with the total distance and duration
             output.innerHTML = "<div class='alert-info'><h3>Total distance: </h3><span>" + distanceInMiles + " miles.</span><h3>Total duration: </h3><span>" + durationString + ".</span><h3>Finish Time: </h3><span class='time'>" + displayFinishTime + "</span></div>";
 
-            
+            // remove the hide class from the LockItIn button
+            showLockInButton()
 
             // Display the route on the map
             directionsDisplay.setDirections(result);
+
+            let postcodeArrivalTimeObject = combineTwoArraysIntoAnObject(postcodes, postcodeArrivalTimes)
+            console.log('postcodeArrivalTimeObject postcodeArrivalTimeObject postcodeArrivalTimeObject ', postcodeArrivalTimeObject)
+
+            // await addArrivalTimes(postcodeArrivalTimeObject)
+
+           
         } else {
             // Delete the route from the map
             directionsDisplay.setDirections({ routes: [] });
@@ -454,8 +634,48 @@ function calcRoute() {
     });
 }
 
+function showLockInButton() {
+    
+    document.querySelector('#lockItIn').classList.remove('hide')
+}
 
 
+function combineTwoArraysIntoAnObject(keys, values) {
+    console.log('running combineTwoArraysIntoAnObject')
+    // Make sure the arrays are the same length
+    if (keys.length !== values.length) {
+        return null;
+    }
+
+    // Create an empty object
+    const result = {};
+
+    // Loop through the keys and values and add them to the object
+    for (let i = 0; i < keys.length; i++) {
+        result[keys[i]] = values[i];
+    }
+
+    // Return the resulting object
+    return result;
+}
+
+async function addArrivalTimes(postcodeArrivalTimeObject) {
+    try {
+        const response = await fetch('jobs/addArrivalTimes', {
+            method: 'post',
+            headers: {'Content-type': 'application/json'},
+            body: JSON.stringify({
+                postcodeArrivalTimes: postcodeArrivalTimeObject
+            })
+            
+        })
+        const data = await response.json()
+        console.log(data)
+        location.reload()
+        } catch(err){
+        console.log(err)
+    }
+}
 
 
 //create autocomplete objects for all inputs

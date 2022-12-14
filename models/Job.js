@@ -28,6 +28,14 @@ const JobSchema = new mongoose.Schema({
   estimatedJobLengthMinutes: {
     type: String,
     required: true
+  }, 
+  archived: {
+    type: Boolean,
+    required: true
+  },
+  order: {
+    type: Number,
+    required: true
   }
 })
 
