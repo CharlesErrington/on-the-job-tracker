@@ -281,77 +281,31 @@ function calcRoute() {
     const startHour = startTime.split(':')[0]
     const startMinutes = startTime.split(':')[1]
 
-    // Create an array to store the postcodes
-    const postcodes = [];
+    //Pull out the innerText of the postcode elements, filter for the ones that are checked and make an array of the postcodes
+    const postcodes = createPostcodesArray(postcodeElements)
 
-   
-    // Loop through the selected elements and extract the postcodes
-    for (let i = 0; i < postcodeElements.length; i++) {
-        // Get the text inside the <span> element
-        console.log('postcodeElements[i] ', postcodeElements[i])
-        const text = postcodeElements[i].innerText;
-        console.log('postcodestext', text)
-        // Extract the postcode from the text (assumes the postcode is the second word in the text)
-        const postcode = text.split(' ')[0];
-
-        // Get the checkbox element with the corresponding id
-        const checkbox = postcodeElements[i].previousElementSibling
-        console.log('postcode checkbox ', checkbox)
-
-        // Check if the checkbox is checked
-        if (checkbox.checked) {
-            console.log('this is the postcode checkbox and its checked')
-        // Add the postcode to the array if the checkbox is checked
-            postcodes.push(postcode);
-        }
-    }
-
-    
 
     // Create an array of waypoints from the postcodes
     const waypoints = postcodes.map(postcode => ({
-
         location: postcode,
         stopover: true
     }));
 
     // Select all <span> elements containing the estimated job length
     const lengthElements = spanArray.filter(element => element.classList.contains('jobLengthSpan'));
-    console.log('lengthElements ', lengthElements)
-    // Create an array to store the estimated job lengths
-    const lengths = [];
-    const lengthsFormattedToHHMM = [];
-
-    // Loop through the selected elements and extract the estimated job lengths
-    for (let i = 0; i < lengthElements.length; i++) {
-        console.log(`lengthElements[${i}] `, lengthElements[i])
-        // Get the text inside the <span> elemeint
-        const text = lengthElements[i].innerText;
-        console.log(`text ${text}`)
-
-        // Extract the hours and minutes from the text
-        const [hours, minutes] = [text.split(' ')[0], text.split(' ')[2]]
-
-        // Get the checkbox element with the corresponding id
-        const checkbox = lengthElements[i].previousElementSibling;
-        console.log('length checkbox', checkbox)
 
 
-        // Check if the checkbox is checked
-        if (checkbox.querySelector('input').checked) {
-        // Add the hours and minutes to the array if the checkbox is checked
-            console.log('ima checked')
-            lengths.push({ hours: Number(hours), minutes: Number(minutes) });
-            lengthsFormattedToHHMM.push(`${hours}:${minutes}`)
-        };
-    }
 
+    const lengths = createLengthsArray(lengthElements)
+
+    const lengthsFormattedToHHMM = createFormattedLengthsArray(lengthElements)
+   
     for (const length of lengths) {
         console.log(`length.hours ${length.hours}`)
         console.log(`length.minutes ${length.minutes}`)
     }
     // Create the request object
-    var request = {
+    const request = {
         origin: startLocation,
         destination: startLocation,
         waypoints: waypoints,
@@ -393,7 +347,8 @@ function calcRoute() {
             let postcodeArrivalTimes = [];
             let lastArrivalHour = '';
             let lastArrivalMinute = '';
-        
+            
+
 
             for(let i = 0; i < postcodes.length; i++) {
                 if(i == 0) {
@@ -468,7 +423,9 @@ function calcRoute() {
                 }
             }
 
-            console.log('postcodeArrivalTimes postcodeArrivalTimes postcodeArrivalTimes ', postcodeArrivalTimes)
+            console.log('postcodeArrivalTimes postcodeArrivalTimes postcodeArrivalTimes', postcodeArrivalTimes)
+
+            // console.log('postcodeArrivalTimes postcodeArrivalTimes postcodeArrivalTimes ', postcodeArrivalTimes)
             
             // Declare the `hours` and `minutes` variables inside the callback function
             let hours = 0;
@@ -639,6 +596,55 @@ function showLockInButton() {
     document.querySelector('#lockItIn').classList.remove('hide')
 }
 
+function createLengthsArray(lengthElements) {
+    // Create an array to store the estimated job lengths
+    const lengths = [];
+
+    // Loop through the selected elements and extract the estimated job lengths
+    for (let i = 0; i < lengthElements.length; i++) {
+        console.log(`lengthElements[${i}] `, lengthElements[i])
+        // Get the text inside the <span> elemeint
+        const text = lengthElements[i].innerText;
+
+        // Extract the hours and minutes from the text
+        const [hours, minutes] = [text.split(' ')[0], text.split(' ')[2]]
+
+        // Get the checkbox element with the corresponding id
+        const checkbox = lengthElements[i].previousElementSibling;
+
+        // Check if the checkbox is checked
+        if (checkbox.querySelector('input').checked) {
+            // Add the hours and minutes to the array if the checkbox is checked
+            lengths.push({ hours: Number(hours), minutes: Number(minutes) });
+        };
+    }
+    return lengths
+}
+
+function createFormattedLengthsArray(lengthElements) {
+    // Create an array to store the estimated job lengths
+    const lengthsFormattedToHHMM = [];
+
+    // Loop through the selected elements and extract the estimated job lengths
+    for (let i = 0; i < lengthElements.length; i++) {
+
+        // Get the text inside the <span> elemeint
+        const text = lengthElements[i].innerText;
+
+        // Extract the hours and minutes from the text
+        const [hours, minutes] = [text.split(' ')[0], text.split(' ')[2]]
+
+        // Get the checkbox element with the corresponding id
+        const checkbox = lengthElements[i].previousElementSibling;
+
+        // Check if the checkbox is checked
+        if (checkbox.querySelector('input').checked) {
+            // Add the hours and minutes to the array if the checkbox is checked
+            lengthsFormattedToHHMM.push(`${hours}:${minutes}`)
+        };
+    }
+    return lengthsFormattedToHHMM
+}
 
 function combineTwoArraysIntoAnObject(keys, values) {
     console.log('running combineTwoArraysIntoAnObject')
@@ -675,6 +681,36 @@ async function addArrivalTimes(postcodeArrivalTimeObject) {
         } catch(err){
         console.log(err)
     }
+}
+
+function createPostcodesArray(postcodeElements) {
+     // Create an array to store the postcodes
+     const postcodes = [];
+
+   
+     // Loop through the selected elements and extract the postcodes
+     for (let i = 0; i < postcodeElements.length; i++) {
+         // Get the text inside the <span> element
+         
+         const text = postcodeElements[i].innerText;
+ 
+         // Extract the postcode from the text (assumes the postcode is the second word in the text)
+         const postcode = text.split(' ')[0];
+ 
+         // Get the checkbox element with the corresponding id
+         const checkbox = postcodeElements[i].previousElementSibling
+ 
+ 
+         // Check if the checkbox is checked
+         if (checkbox.checked) {
+ 
+         // Add the postcode to the array if the checkbox is checked
+             postcodes.push(postcode);
+         }
+     }
+
+     return postcodes
+ 
 }
 
 
