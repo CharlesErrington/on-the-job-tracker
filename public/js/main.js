@@ -300,10 +300,7 @@ function calcRoute() {
 
     const lengthsFormattedToHHMM = createFormattedLengthsArray(lengthElements)
    
-    for (const length of lengths) {
-        console.log(`length.hours ${length.hours}`)
-        console.log(`length.minutes ${length.minutes}`)
-    }
+
     // Create the request object
     const request = {
         origin: startLocation,
@@ -328,7 +325,7 @@ function calcRoute() {
                 durationLegArray.push(leg.duration.value)
             }
 
-            console.log('This is the durationLegArray ', durationLegArray)
+
 
             // Convert the durations in the duration leg array to hours:minutes
 
@@ -342,90 +339,8 @@ function calcRoute() {
             console.log('this is the lengths array ', lengths)
             console.log('this is the formatted lengths array ', lengthsFormattedToHHMM)
 
-
-            //Calculate the arrival time at each address
-            let postcodeArrivalTimes = [];
-            let lastArrivalHour = '';
-            let lastArrivalMinute = '';
+            let postcodeArrivalTimes = calculatePostcodeArrivalTimes(startTime, durationLegArray, lengthsFormattedToHHMM, postcodes)
             
-
-
-            for(let i = 0; i < postcodes.length; i++) {
-                if(i == 0) {
-
-                    //calculate the arrival time at the first job location
-                    let arrivalTimeHour = +startTime.split(':')[0] + +durationLegArray[i].split(':')[0]
-                    console.log('arrivalTimeHour summed [0]', arrivalTimeHour)
-                    
-                    
-                    console.log('arrivalTimeHour summed [0]', arrivalTimeHour)
-                    //calculate the arrival minute for the first location
-                    let arrivalTimeMinute = +startTime.split(':')[1] + +durationLegArray[i].split(':')[1]
-                    console.log('arrivalTimeMinute ', arrivalTimeMinute)
-
-                    //Correct the time if minutes go over 60
-                    if(arrivalTimeMinute > 60) {
-                        while(arrivalTimeMinute > 60) {
-                            arrivalTimeMinute -= 60
-                            arrivalTimeHour += 1
-                        }
-                    }
-                    //if the time goes past midnight set it back
-                    if(arrivalTimeHour > 23) {
-                        arrivalTimeHour -= 24
-                    }
-                    //Add the correct formatting for display if the minute is less than 10
-                    if(arrivalTimeMinute < 10) {
-                        arrivalTimeMinute = '0' + arrivalTimeMinute
-                    }
-                    
-                    //add the correct formatting for display if the hour is less than 10
-                    if(arrivalTimeHour < 10) {
-                        arrivalTimeHour = '0' + arrivalTimeHour
-                    }
-                    console.log('arrivalTimeMinute ', arrivalTimeMinute)
-                    lastArrivalHour = arrivalTimeHour
-                    lastArrivalMinute = arrivalTimeMinute
-                    postcodeArrivalTimes.push(`${arrivalTimeHour}:${arrivalTimeMinute}`)
-                } else {
-                    // console.log('+lastArrivalHour ', +lastArrivalHour)
-                    // console.log("+lengthsFormattedToHHMM[i - 1].split(':')[0] ", +lengthsFormattedToHHMM[i - 1].split(':')[0])
-                    // console.log("durationLegArray[i].split(':')[0] ", durationLegArray[i].split(':')[0])
-                    let arrivalTimeHour = +lastArrivalHour + +lengthsFormattedToHHMM[i - 1].split(':')[0] + +durationLegArray[i].split(':')[0]
-                    console.log(`arrivalTimeHour summed [${i}]`, arrivalTimeHour)
-                    let arrivalTimeMinute = +lastArrivalMinute + +lengthsFormattedToHHMM[i - 1].split(':')[1] + +durationLegArray[i].split(':')[1]
-                    console.log(`arrivalTimeMinute summed [${i}]`, arrivalTimeMinute)
-                    //Correct the time if minutes go over 60
-                    if(arrivalTimeMinute > 60) {
-                        while(arrivalTimeMinute > 60) {
-                            arrivalTimeMinute -= 60
-                            arrivalTimeHour += 1
-                        }
-                    }
-                    //if the time goes past midnight set it back
-                    if(arrivalTimeHour > 23) {
-                        arrivalTimeHour -= 24
-                    }
-                    //Add the correct formatting for display if the minute is less than 10
-                    if(arrivalTimeMinute < 10) {
-                        arrivalTimeMinute = '0' + arrivalTimeMinute
-                    }
-                    
-                    //add the correct formatting for display if the hour is less than 10
-                    if(arrivalTimeHour < 10) {
-                        arrivalTimeHour = '0' + arrivalTimeHour
-                    }
-                    console.log('arrivalTimeMinute ', arrivalTimeMinute)
-                    lastArrivalHour = arrivalTimeHour
-                    lastArrivalMinute = arrivalTimeMinute
-                    postcodeArrivalTimes.push(`${arrivalTimeHour}:${arrivalTimeMinute}`)
-
-                }
-            }
-
-            console.log('postcodeArrivalTimes postcodeArrivalTimes postcodeArrivalTimes', postcodeArrivalTimes)
-
-            // console.log('postcodeArrivalTimes postcodeArrivalTimes postcodeArrivalTimes ', postcodeArrivalTimes)
             
             // Declare the `hours` and `minutes` variables inside the callback function
             let hours = 0;
@@ -438,8 +353,6 @@ function calcRoute() {
             hours = date.getUTCHours();
             minutes = date.getUTCMinutes();   
 
-            // console.log(`hours: ${hours}`)
-            // console.log(`minutes: ${minutes}`)
 
             // Add the hours and minutes from the lengths array to the `hours` and `minutes` variables
             for (const length of lengths) {
@@ -602,7 +515,7 @@ function createLengthsArray(lengthElements) {
 
     // Loop through the selected elements and extract the estimated job lengths
     for (let i = 0; i < lengthElements.length; i++) {
-        console.log(`lengthElements[${i}] `, lengthElements[i])
+
         // Get the text inside the <span> elemeint
         const text = lengthElements[i].innerText;
 
@@ -711,6 +624,86 @@ function createPostcodesArray(postcodeElements) {
 
      return postcodes
  
+}
+
+function calculatePostcodeArrivalTimes(startTime, durationLegArray, lengthsFormattedToHHMM, postcodes) {
+    //Calculate the arrival time at each address
+    let postcodeArrivalTimes = [];
+    let lastArrivalHour = '';
+    let lastArrivalMinute = '';
+    
+
+
+    for(let i = 0; i < postcodes.length; i++) {
+        if(i == 0) {
+
+            //calculate the arrival time at the first job location
+            let arrivalTimeHour = +startTime.split(':')[0] + +durationLegArray[i].split(':')[0]
+
+            //calculate the arrival minute for the first location
+            let arrivalTimeMinute = +startTime.split(':')[1] + +durationLegArray[i].split(':')[1]
+
+            //Correct the time if minutes go over 60
+            if(arrivalTimeMinute > 60) {
+                while(arrivalTimeMinute > 60) {
+                    arrivalTimeMinute -= 60
+                    arrivalTimeHour += 1
+                }
+            }
+            //if the time goes past midnight set it back
+            if(arrivalTimeHour > 23) {
+                arrivalTimeHour -= 24
+            }
+            //Add the correct formatting for display if the minute is less than 10
+            if(arrivalTimeMinute < 10) {
+                arrivalTimeMinute = '0' + arrivalTimeMinute
+            }
+            
+            //add the correct formatting for display if the hour is less than 10
+            if(arrivalTimeHour < 10) {
+                arrivalTimeHour = '0' + arrivalTimeHour
+            }
+
+            lastArrivalHour = arrivalTimeHour
+            lastArrivalMinute = arrivalTimeMinute
+            postcodeArrivalTimes.push(`${arrivalTimeHour}:${arrivalTimeMinute}`)
+        } else {
+            // console.log('+lastArrivalHour ', +lastArrivalHour)
+            // console.log("+lengthsFormattedToHHMM[i - 1].split(':')[0] ", +lengthsFormattedToHHMM[i - 1].split(':')[0])
+            // console.log("durationLegArray[i].split(':')[0] ", durationLegArray[i].split(':')[0])
+            let arrivalTimeHour = +lastArrivalHour + +lengthsFormattedToHHMM[i - 1].split(':')[0] + +durationLegArray[i].split(':')[0]
+
+            let arrivalTimeMinute = +lastArrivalMinute + +lengthsFormattedToHHMM[i - 1].split(':')[1] + +durationLegArray[i].split(':')[1]
+
+            //Correct the time if minutes go over 60
+            if(arrivalTimeMinute > 60) {
+                while(arrivalTimeMinute > 60) {
+                    arrivalTimeMinute -= 60
+                    arrivalTimeHour += 1
+                }
+            }
+            //if the time goes past midnight set it back
+            if(arrivalTimeHour > 23) {
+                arrivalTimeHour -= 24
+            }
+            //Add the correct formatting for display if the minute is less than 10
+            if(arrivalTimeMinute < 10) {
+                arrivalTimeMinute = '0' + arrivalTimeMinute
+            }
+            
+            //add the correct formatting for display if the hour is less than 10
+            if(arrivalTimeHour < 10) {
+                arrivalTimeHour = '0' + arrivalTimeHour
+            }
+
+            lastArrivalHour = arrivalTimeHour
+            lastArrivalMinute = arrivalTimeMinute
+            postcodeArrivalTimes.push(`${arrivalTimeHour}:${arrivalTimeMinute}`)
+
+        }
+    }
+
+    return postcodeArrivalTimes
 }
 
 
