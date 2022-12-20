@@ -4,11 +4,38 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Mono:wght@100;300;400;600;700&family=Roboto:wght@100;300;400;500&family=Sora:wght@100;300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/css/style.css"
+    <title>Home</title>
 </head>
-<body>
-    <h1>Create Your VERY OWN Todolist!</h1>
+<body id="customerHome">
+    <img src="/images/garagestyleLogo.webp">
     <a href="/login"> Login</a>
     <a href="/signup"> Signup</a>
+    <section>
+        
+        
+
+        <% if (arrivalTime) { %>
+            
+            <h2>ARRIVAL TIME:</h2>
+            <span class="timeDisplay"><%= arrivalTime %></span>
+            
+            
+        <% } %>
+
+        <% if (!arrivalTime) { %>
+            
+            <!-- <h1>Please enter your postcode to see when your technician will arrive:</h1> -->
+            <h1>PLEASE ENTER YOUR POSTCODE TO SEE WHEN YOUR TECHNICIAN WILL ARRIVE:</h1> 
+            <form action="/getPostcodeArrivalTime" method="post">
+                <input class="textInput" type="text" placeholder="YOUR POSTCODE" name='postcodeForArrivalTime'>
+                <input type="submit">
+            </form>
+            
+            
+        <% } %>
+
+    </section>
 </body>
 </html>

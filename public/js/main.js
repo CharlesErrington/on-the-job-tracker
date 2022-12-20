@@ -313,7 +313,7 @@ function calcRoute() {
 
 
     // Pass the request to the route method
-    directionsService.route(request, function (result, status) {
+    directionsService.route(request, async function (result, status) {
         if (status == google.maps.DirectionsStatus.OK) {
             // Calculate the total distance and duration of the route
             let distance = 0;
@@ -336,149 +336,36 @@ function calcRoute() {
             })
 
             console.log('This is the durationLegArray converted to hours and minutes ', durationLegArray)
-            console.log('this is the lengths array ', lengths)
+            console.log('this is the lengths array which is the length of the jobs, or time on site', lengths)
             console.log('this is the formatted lengths array ', lengthsFormattedToHHMM)
 
             let postcodeArrivalTimes = calculatePostcodeArrivalTimes(startTime, durationLegArray, lengthsFormattedToHHMM, postcodes)
             
             
-            // Declare the `hours` and `minutes` variables inside the callback function
-            let hours = 0;
-            let minutes = 0;
-
-            // Create a Date object from the duration value
-            const date = new Date(duration * 1000);
-
-            // Get the number of hours and minutes from the Date object
-            hours = date.getUTCHours();
-            minutes = date.getUTCMinutes();   
-
-
-            // Add the hours and minutes from the lengths array to the `hours` and `minutes` variables
-            for (const length of lengths) {
-                //console.log(`length.hours ${length.hours}`)
-                //console.log(`length.minutes ${length.minutes}`)
-
-                hours += length.hours;
-                minutes += length.minutes;
-
-                // Make sure the `minutes` variable does not exceed 59
-                if (minutes >= 60) {
-                    hours += 1;
-                    minutes -= 60;
-                }
-            }
-
-            console.log(`hours: ${hours}`)
-            console.log(`minutes: ${minutes}`)
-
-            //Use the start time and the hours worked to calculate the finish time
-
+            let timeWorked = calculateTimeWorked(lengths, duration)
             
-            let finishHour = (+hours + +startHour) % 24
-            let finishMinutes = (+minutes + + startMinutes)
-            console.log('finishHour ', finishHour)
-            console.log('finishMinutes ', finishMinutes)
+            let hours = timeWorked[0]
+            let minutes = timeWorked[1]
 
-            while (finishMinutes > 60) {
-                finishMinutes -= 60
-                finishHour += 1
-            }
-
-            if (finishMinutes < 10) {
-                finishMinutes = '0' + finishMinutes
-            }
-
-            console.log('finishHour after ', finishHour)
-            console.log('finishMinutes  after', finishMinutes)
-            
             // Create a string with the hours and minutes
             const durationString = hours + " hours " + minutes + " minutes";
-            const finishTime = finishHour + ':' + finishMinutes
+
+            //Use the start time and the hours worked to calculate the finish time
+            const finishTime = calculateExpectedFinishTime(hours,minutes,startHour,startMinutes)
+           
+
 
             //Get the finish time from the document in order to compare it to the calculated finish time
             let finishTimeSetByWorker = document.getElementById('finishTimeSpan').innerText;
-            console.log('finishTimeSetByWorker', finishTimeSetByWorker)
-
-            console.log('startTime ', startTime)
-            // Convert the starttime and the finishTimeSetByWorker strings to Date objects
-            const date1 = new Date(`1970-01-01T${startTime}`);
-            const date2 = new Date(`1970-01-01T${finishTimeSetByWorker}`);
-            console.log('date1 ', date1)
-            
-            // Get the hour and minute components of each time
-            const hour1 = date1.getHours();
-            const minute1 = date1.getMinutes();
-            const hour2 = date2.getHours();
-            const minute2 = date2.getMinutes();
-
-            console.log('hour1 ', hour1)
-            console.log('minute1 ', minute1)
-            console.log('hour2 ', hour2)
-            console.log('minute2 ', minute2)
-
-            // Calculate the difference between the hours and minutes of the two times
-            let hourDiff = hour2 - hour1;
-            let minuteDiff = 0;
-            if (minute1 > minute2) {
-            // If minute1 is greater than minute2, subtract minute1 from 60 and then minute2 from the result
-            // This gives the correct difference between the minutes in the 'hh:mm' format
-            minuteDiff = 60 - minute1 + minute2;
-            // Decrement hourDiff by 1 to take into account the fact that an extra hour has been borrowed to calculate the minutes difference
-            hourDiff -= 1;
-            } else {
-            // If minute1 is less than or equal to minute2, simply subtract minute1 from minute2
-            minuteDiff = minute2 - minute1;
-            }
-
-            // Convert the difference in hours and minutes to the 'hh:mm' format using Math.floor() and Math.abs()
-            const hourDiffAbs = Math.floor(Math.abs(hourDiff));
-            const hourString = hourDiffAbs < 10 ? `0${hourDiffAbs}` : `${hourDiffAbs}`;
-            const minuteString = minuteDiff < 10 ? `0${minuteDiff}` : `${minuteDiff}`;
-            const diffString = `${hourString}:${minuteString}`;
-
-            // Print the formatted difference between the two times
-            let durationCheck = hours + ':' + minutes;
-
-            console.log('durationString.split(\':\')[0] ', durationString.split(':')[0])
-            console.log('diffString.split(\':\')[0] ', diffString.split(':')[0])
-            //See if the hours of the day are greater than the estimated hours alert
-            if (+durationCheck.split(':')[0] > +diffString.split(':')[0]) {
-
-                document.querySelector('#finishTimeWarning').innerText = "With this many jobs you will be home later than you are aiming for, consider unchecking one or more jobs and calculating again"
-                document.querySelector('.alert').classList.remove('hide');
-            } else if (+durationCheck.split(':')[0] == +diffString.split(':')[0] && +durationCheck.split(':')[1] > +diffString.split(':')[1]) {
-
-                document.querySelector('#finishTimeWarning').innerText = "With this many jobs you will be home later than you are aiming for, consider unchecking one or more jobs and calculating again"
-                document.querySelector('.alert').classList.remove('hide');
-            } else {
-                document.querySelector('#finishTimeWarning').style.display = 'none'
-                document.querySelector('.alert').classList.add('hide');
-            }
-            
-            // Get the container holding the output element that is currently hidden
-            const outputHolder = document.getElementById('outputHolder')
-
-            //remove the hidden class from it
-            outputHolder.classList.remove("hide");
-
-            // Get the output element
-            const output = document.querySelector('#output');
-
-            //convert the distance to miles
-            const distanceInMiles = Math.round(distance * 0.000621371)
-
-            displayFinishHour = finishHour
-
-            if (displayFinishHour < 10) {
-                displayFinishHour = '0' + displayFinishHour
-            }
-
-            displayFinishTime = displayFinishHour + ':' + finishMinutes
 
 
-            // Update the output with the total distance and duration
-            output.innerHTML = "<div class='alert-info'><h3>Total distance: </h3><span>" + distanceInMiles + " miles.</span><h3>Total duration: </h3><span>" + durationString + ".</span><h3>Finish Time: </h3><span class='time'>" + displayFinishTime + "</span></div>";
+            //Calculate the number of hours and minutes in the day is set by the worker, the desired work day length
+            const diffString = calculateDesiredWorkDayLength(startTime,finishTimeSetByWorker)
+
+            //Check the hours that the worker has set and is hoping to work against the hours calculated by the routes and the jobs, if the calculated hours are greater than the hours set give the worker a warning
+            checkExpectedDurationAgainstDesiredDurationAndGiveWarning(hours,minutes,diffString)
+
+            setTheResultsInfoIntoTheOutputDivAndMakeItVisible(distance, durationString, finishTime)
 
             // remove the hide class from the LockItIn button
             showLockInButton()
@@ -489,9 +376,9 @@ function calcRoute() {
             let postcodeArrivalTimeObject = combineTwoArraysIntoAnObject(postcodes, postcodeArrivalTimes)
             console.log('postcodeArrivalTimeObject postcodeArrivalTimeObject postcodeArrivalTimeObject ', postcodeArrivalTimeObject)
 
-            // await addArrivalTimes(postcodeArrivalTimeObject)
+            await addArrivalTimes(postcodeArrivalTimeObject)
 
-           
+
         } else {
             // Delete the route from the map
             directionsDisplay.setDirections({ routes: [] });
@@ -590,7 +477,7 @@ async function addArrivalTimes(postcodeArrivalTimeObject) {
         })
         const data = await response.json()
         console.log(data)
-        location.reload()
+
         } catch(err){
         console.log(err)
     }
@@ -706,6 +593,137 @@ function calculatePostcodeArrivalTimes(startTime, durationLegArray, lengthsForma
     return postcodeArrivalTimes
 }
 
+function calculateTimeWorked(lengths, duration) {
+    // Declare the `hours` and `minutes` variables inside the callback function
+    let hours = 0;
+    let minutes = 0;
+
+    // Create a Date object from the duration value
+    const date = new Date(duration * 1000);
+
+    // Get the number of hours and minutes from the Date object
+    hours = date.getUTCHours();
+    minutes = date.getUTCMinutes();   
+
+
+    // Add the hours and minutes from the lengths array to the `hours` and `minutes` variables
+    for (const length of lengths) {
+        //console.log(`length.hours ${length.hours}`)
+        //console.log(`length.minutes ${length.minutes}`)
+
+        hours += length.hours;
+        minutes += length.minutes;
+
+        // Make sure the `minutes` variable does not exceed 59
+        if (minutes >= 60) {
+            hours += 1;
+            minutes -= 60;
+        }
+    }
+    return [hours, minutes]
+}
+
+function calculateExpectedFinishTime(hours,minutes,startHour,startMinutes) {
+    let finishHour = (+hours + +startHour) % 24
+    let finishMinutes = (+minutes + + startMinutes)
+
+
+    while (finishMinutes > 60) {
+        finishMinutes -= 60
+        finishHour += 1
+    }
+
+    if (finishMinutes < 10) {
+        finishMinutes = '0' + finishMinutes
+    }
+
+    if (finishHour < 10) {
+        finishHour = '0' + finishHour
+    }
+    
+    
+    const finishTime = finishHour + ':' + finishMinutes
+    
+    return finishTime
+}
+
+function calculateDesiredWorkDayLength(startTime,finishTimeSetByWorker) {
+    // Convert the starttime and the finishTimeSetByWorker strings to Date objects
+    const date1 = new Date(`1970-01-01T${startTime}`);
+    const date2 = new Date(`1970-01-01T${finishTimeSetByWorker}`);
+    console.log('date1 ', date1)
+    
+    // Get the hour and minute components of each time
+    const hour1 = date1.getHours();
+    const minute1 = date1.getMinutes();
+    const hour2 = date2.getHours();
+    const minute2 = date2.getMinutes();
+
+    console.log('hour1 ', hour1)
+    console.log('minute1 ', minute1)
+    console.log('hour2 ', hour2)
+    console.log('minute2 ', minute2)
+
+    // Calculate the difference between the hours and minutes of the two times
+    let hourDiff = hour2 - hour1;
+    let minuteDiff = 0;
+    if (minute1 > minute2) {
+    // If minute1 is greater than minute2, subtract minute1 from 60 and then minute2 from the result
+    // This gives the correct difference between the minutes in the 'hh:mm' format
+    minuteDiff = 60 - minute1 + minute2;
+    // Decrement hourDiff by 1 to take into account the fact that an extra hour has been borrowed to calculate the minutes difference
+    hourDiff -= 1;
+    } else {
+    // If minute1 is less than or equal to minute2, simply subtract minute1 from minute2
+    minuteDiff = minute2 - minute1;
+    }
+
+    // Convert the difference in hours and minutes to the 'hh:mm' format using Math.floor() and Math.abs()
+    const hourDiffAbs = Math.floor(Math.abs(hourDiff));
+    const hourString = hourDiffAbs < 10 ? `0${hourDiffAbs}` : `${hourDiffAbs}`;
+    const minuteString = minuteDiff < 10 ? `0${minuteDiff}` : `${minuteDiff}`;
+    return `${hourString}:${minuteString}`;
+}
+
+function checkExpectedDurationAgainstDesiredDurationAndGiveWarning(hours,minutes,diffString) {
+    // Print the formatted difference between the two times
+    let durationCheck = hours + ':' + minutes;
+
+
+
+    //See if the hours of the day are greater than the estimated hours alert
+    if (+durationCheck.split(':')[0] > +diffString.split(':')[0]) {
+
+        document.querySelector('#finishTimeWarning').innerText = "With this many jobs you will be home later than you are aiming for, consider unchecking one or more jobs and calculating again"
+        document.querySelector('.alert').classList.remove('hide');
+    } else if (+durationCheck.split(':')[0] == +diffString.split(':')[0] && +durationCheck.split(':')[1] > +diffString.split(':')[1]) {
+
+        document.querySelector('#finishTimeWarning').innerText = "With this many jobs you will be home later than you are aiming for, consider unchecking one or more jobs and calculating again"
+        document.querySelector('.alert').classList.remove('hide');
+    } else {
+        document.querySelector('#finishTimeWarning').style.display = 'none'
+        document.querySelector('.alert').classList.add('hide');
+    }
+    
+}
+
+function setTheResultsInfoIntoTheOutputDivAndMakeItVisible(distance, durationString, finishTime) {
+    // Get the container holding the output element that is currently hidden
+    const outputHolder = document.getElementById('outputHolder')
+
+    //remove the hidden class from it
+    outputHolder.classList.remove("hide");
+
+    // Get the output element
+    const output = document.querySelector('#output');
+
+    //convert the distance to miles
+    const distanceInMiles = Math.round(distance * 0.000621371)
+
+   
+    // Update the output with the total distance and duration
+    output.innerHTML = "<div class='alert-info'><h3>Total distance: </h3><span>" + distanceInMiles + " miles.</span><h3>Total duration: </h3><span>" + durationString + ".</span><h3>Finish Time: </h3><span class='time'>" + finishTime + "</span></div>";
+}
 
 //create autocomplete objects for all inputs
 var options = {

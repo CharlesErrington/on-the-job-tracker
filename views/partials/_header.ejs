@@ -1,0 +1,13 @@
+<nav class="grey darken-3">
+    <div class="">
+        <a href="#" class="brand-logo center"><img src="../images/garagestyleLogo.webp" alt=""></a>
+        <ul class="sidenav" id="mobile-demo">
+            <% if (!user) { %>
+                <li><a class="logout" href="/login">Login</a></li>
+            <% } else { %>
+                <li><a class="logout" href="/logout">Logout</a></li>
+            <% } %>  
+
+        </ul>
+    </div>
+</nav>

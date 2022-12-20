@@ -29,4 +29,6 @@ router.put('/changeJobOrderUp', jobsController.changeJobOrderUp)
 
 router.put('/changeJobOrderDown', jobsController.changeJobOrderDown)
 
+router.post('/addArrivalTimes', jobsController.addArrivalTimes)
+
 module.exports = router

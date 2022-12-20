@@ -24,16 +24,17 @@ body {
 
 .body-container {
     
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: 'Palanquin', sans-serif;
+    font-weight: 700;
     margin: 30px auto;
     padding: 20px;
     width: calc(800px - 40px);
     color: #333;
     opacity: 0.99;
     border-radius: 15px;
-    backdrop-filter: blur(14px) saturate(180%);
+    /* backdrop-filter: blur(14px) saturate(180%); */
     -webkit-backdrop-filter: blur(14px) saturate(180%);
-    background-color: rgba(255, 255, 255, 0.75);
+    /* background-color: rgba(255, 255, 255, 0.75); */
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.125);
 
@@ -53,26 +54,32 @@ body {
 
 .input-container {
     background-color: white;
+    min-height: 70px;
     padding: 5px 20px;
-    margin: 20px 0;
+    margin: 30px 0;
     border-radius: 15px;
     border: solid 1px #e6e6e6;
     box-shadow: 4px 4px 20px 1px rgba(0,0,0,0.52);
     -webkit-box-shadow: 4px 4px 20px 1px rgba(0,0,0,0.52);
     -moz-box-shadow: 4px 4px 20px 1px rgba(0,0,0,0.52);
+    
 }
 
 .grid-container {
     display: grid;
     grid-template-columns: 0.5fr 1fr 0.5fr;
     align-items: center;
+    min-height: 70px;
 }
+
+
 
 .job-grid-container {
     display: grid;
     grid-template-columns: 1fr 2fr 0.2fr 0.2fr;
     align-items: center;
     grid-gap: 10px;
+    min-height: 32px;
 }
 
 .grid-container .startTimeSpan {
@@ -91,12 +98,17 @@ body {
 }
 
 h1, h2, h3{
-    font-family: 'Helvetica Neue', sans-serif;
+    font-family: 'Roboto', sans-serif;
     color: #999999;
     margin: 10px 0;
     font-size: 20px;
 
 }
+
+#startLocationSpan {
+    font-size: 24px;
+}
+
 .completed{
     text-decoration: line-through;
     color: gray;
@@ -111,7 +123,7 @@ h1, h2, h3{
 
 #googleMap {
     width: 80%;
-    height: 400px;
+    height: 512px;
     margin: 60px auto;
     box-shadow: 4px 4px 20px 1px rgba(0,0,0,0.52);
     -webkit-box-shadow: 4px 4px 20px 1px rgba(0,0,0,0.52);
@@ -146,15 +158,16 @@ li.jobItem {
     margin: 30px 0;
     transform: scale(1);
     transition: transform 0.2s ease-in-out;
+    min-height: 32px;
 }
 
 li.jobItem:hover {
     /* border: 1px solid #ccc; */
 
-    transform: scale(1.1);
+    transform: scale(1.05);
     
-    border: 1px solid #6c62ff;
-    background-color: #6c62ff;
+    border: 1px solid hsl(244, 100%, 69%);
+    background-color: hsl(244, 100%, 69%);
     color: white;
     border-radius: 8px;
     box-shadow: 4px 4px 20px 1px rgba(0,0,0,0.52);
@@ -229,8 +242,14 @@ i {
     float: right;
 }
 
-i:hover {
+.top-container i:hover {
     font-size: 20px;
+    color: rgba(0,0,0,1);
+}
+
+.li-container i:hover {
+    font-size: 20px;
+    color: hsl(200, 15%, 100%);;
 }
 
 .job-checkbox:hover {
@@ -239,12 +258,12 @@ i:hover {
 
 .start-time span, .finish-time span  {
     font-family: myFont;
-    font-size: 30px;
+    font-size: 32px;
 }
 
 .time {
     font-family: myFont;
-    font-size: 30px !important;
+    font-size: 32px !important;
 }
 
 .start-location span {
@@ -287,23 +306,24 @@ i:hover {
 
 #createJobForm input, #createJobForm select {
     width: 100%;
-    background-color: #eef2f5;
+    background-color: hsl(200, 15%, 96%);
     border: none;
-    color: #b2b3b3;
+    color: hsl(230, 15%, 60%);
     padding: 20px;
 }
 
 #createJobForm input::placeholder {
-    color: #b2b3b3;  
+    color: hsl(230, 15%, 60%);
     
 }
 
 #jobCreationSubmitButton {
-    background-color: #6c62ff !important;
+    background-color: white !important;
     margin: 20px 0;
-    color: white !important;
+    color: #6c62ff !important;
     border-radius: 10px;
-    font-size: 25px;
+    border: 2px solid #6c62ff !important;
+    font-size: 24px;
     /* background-color: rgba(255, 255, 255, 0.5); */
     transform: scale(1);
     
@@ -311,16 +331,17 @@ i:hover {
 
 
 #jobCreationSubmitButton:hover {
-   background-color: #7b72ff !important;
+   background-color: #6c62ff !important;
     /* background-color: #b3b3ff !important; */
     /* background-color: rgba(255, 255, 255, 0.2); */
+    color: white !important;
     box-shadow: 4px 4px 20px 1px rgba(0,0,0,0.52);
     -webkit-box-shadow: 4px 4px 20px 1px rgba(0,0,0,0.52);
     -moz-box-shadow: 4px 4px 20px 1px rgba(0,0,0,0.52);
-    transform: scale(1.02);
+    transform: scale(1.00);
 } 
 
-#logout {
+.logout {
     float: right;
     margin-right: 20px;
 
@@ -336,7 +357,7 @@ i:hover {
 #routebtn {
     width: 78%;
     margin: 0 auto !important;
-    background-color: #ffb662;
+    background-color: #6c62ff;
     border: none;
     padding: 20px;
     border-radius: 10px;
@@ -344,13 +365,13 @@ i:hover {
     box-shadow: 4px 4px 20px 1px rgba(0,0,0,0.52);
     -webkit-box-shadow: 4px 4px 20px 1px rgba(0,0,0,0.52);
     -moz-box-shadow: 4px 4px 20px 1px rgba(0,0,0,0.52);
-    font-size: 25px;
+    font-size: 24px;
     transform: scale(1);
     z-index: 5;
 }
 
 #routebtn:hover {
-    background-color:#ffbd72 ;
+    background-color:#3C2FFF ;
     transform: scale(1.02);
 }
 
@@ -358,8 +379,8 @@ i:hover {
     display: none;
 }
 
-#logout {
-    text-decoration: none;
+.logout {
+    text-decoration: none !important;
     font-weight: 700;
     color: white;
     padding: 10px 30px;
@@ -371,7 +392,7 @@ i:hover {
     transform: scale(1);
 }
 
-#logout:hover {
+.logout:hover {
     background-color: rgba(255, 255, 255, 0.4); 
     transform: scale(1.05);
 }
@@ -461,3 +482,115 @@ input[type="checkbox"]:checked + label {
         transform: translateX(10%) ;
     }
 }
+
+#customerHome {
+    background: linear-gradient(to bottom right,rgba(200, 200, 200, 0.3), rgba(0, 0, 0, 0.7)), url(../images/backgroundImage.webp);
+    background-attachment: fixed;
+    background-position: center;
+    background-size: cover;
+    /* background-blend-mode: multiply; */
+}
+
+#customerHome section {
+    margin: auto auto;
+    height: 100%;
+    width: 768px;
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+}
+
+#customerHome h1, #customerHome h2{
+    color: white;
+    font-family: 'Roboto', sans-serif;
+    font-size: 48px;
+    text-align: center;
+    letter-spacing: 0.05em;
+    text-shadow: 0 15px 35px hsla(0, 0%, 0%, 0.9);
+}
+
+#customerHome a {
+    float: right;
+    color: white;
+    text-decoration: none;
+    font-family: 'Roboto', sans-serif;
+    padding: 10px;
+    
+}
+
+#customerHome form {
+    padding: 60px 0;
+
+}
+
+#customerHome .textInput {
+    background-color: rgba(0,0,0,.2);
+    color: white;
+    width: 400px;
+    height: 70px;
+    text-align: center;
+    
+}
+
+#customerHome .textInput::placeholder {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+#customerHome form input {
+    width: 150px;
+    height: 70px;
+    font-size: 32px;
+}
+
+#customerHome .timeDisplay {
+    font-family: myFont;
+    font-size: 80px;
+    color: white;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+}
+
+#output div span {
+    font-size: 24px;
+}
+
+.fa-trash {
+    color: rgba(153, 153, 153, 1);
+}
+
+.button-container {
+    position: relative;
+}
+
+/* .fa-angle-down {
+    height: 30px;
+    width: 30px;
+    background-color: #6c62ff;
+    text-align: center;
+    border-radius: 50%;
+    line-height: 30px;  
+    vertical-align: middle;  
+    color: white;
+    position: absolute;
+    bottom: -50px;
+  } */
+
+  nav > div {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  nav > div ul {
+    display: flex;
+   
+  }
+
+  nav img {
+    height: 100px;
+  }

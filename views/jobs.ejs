@@ -4,14 +4,16 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Jobs</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <link rel="stylesheet" href="/css/ds_digital/DS-DIGI.TTF" type="text/css">
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Palanquin:wght@100;200;300;400;500;600;700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/a79293c569.js" crossorigin="anonymous"></script>
 
     <link rel="stylesheet" type="text/css" href="/css/style.css">
 </head>
 <body>
+
     <div class="alert show hide">
         <span class="fas fa-exclamation-circle"></span>
         <span class="msg">Warning: With this many jobs you will be home later than you are aiming for, consider unchecking one or more jobs and calculating again</span>
@@ -20,10 +22,10 @@
             <span class="fas fa-times"></span>
         </span>
     </div>
-        <a class="clearfix" id="logout" href="/logout">Logout</a>
-
+        <!-- <a class="clearfix"  href="/logout">Logout</a> -->
+    <%- include('partials/_header') %>
     <div class="body-container clearfix">
-        <div class="input-container">
+        <div class="input-container top-container">
             <div>
                 <div class="grid-container">
                     <h2>Start Time</h2>
@@ -88,7 +90,7 @@
             </div>
         </div>
 
-        <div class="input-container">
+        <div class="input-container top-container">
             <div class="grid-container">
                 <h2>Finish Time</h2>
             
@@ -152,8 +154,8 @@
             
         </div>
 
-        <div class="input-container">
-            <div class="grid-container">
+        <div class="input-container top-container">
+            <div class="grid-container start-location-div">
                 <h2>Start Location</h2>
 
                 <% if (startLocation) { %>
@@ -225,7 +227,8 @@
                                         </span>
                                         <div class="button-container">
                                           <!-- <button class="button-up hide">▲</button> -->
-                                          <button class="button-down">▼</button>
+                                          <i class="fa-solid fa-angle-down button-down"></i>
+                                          <!-- <button class="button-down">▼</button> -->
                                         </div>
                                         <span class="jobItemOrder hide" ><%= jobs[i].order %></span>
                                         <span class='del'><i class="fas fa-trash"></i></span>
@@ -244,7 +247,7 @@
                                           <%= jobs[i].estimatedJobLengthHours %> Hours <%= jobs[i].estimatedJobLengthMinutes %> Minutes
                                         </span>
                                         <div class="button-container">
-                                          <button class="button-up">▲</button>
+                                            <i class="fa-solid fa-angle-up button-up"></i>
                                           <!-- <button class="button-down">▼</button> -->
                                         </div>
                                         <span class="jobItemOrder hide" ><%= jobs[i].order %></span>
@@ -264,8 +267,8 @@
                                           <%= jobs[i].estimatedJobLengthHours %> Hours <%= jobs[i].estimatedJobLengthMinutes %> Minutes
                                         </span>
                                         <div class="button-container">
-                                          <button class="button-up">▲</button>
-                                          <button class="button-down">▼</button>
+                                            <i class="fa-solid fa-angle-up  button-up"></i>
+                                            <i class="fa-solid fa-angle-down button-down"></i>
                                         </div>
                                         <span class="jobItemOrder hide" ><%= jobs[i].order %></span>
                                         <span class='del'><i class="fas fa-trash"></i></span>
@@ -337,9 +340,6 @@
                 </div>
                 <div class="col-xs-offset-2 col-xs-10 buttonHolder">
                     <button id="routebtn" class="">Calculate Day's Length</button>
-                </div>
-                <div id="lockItIn" class="col-xs-offset-2 col-xs-10 buttonHolder hide">
-                    <button class="">Lock It In</button>
                 </div>
                 <div id="outputHolder" class="input-container hide">
                     <div class="container-fluid">

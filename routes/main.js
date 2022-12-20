@@ -13,5 +13,6 @@ router.post('/signup', authController.postSignup)
 router.get('/companySignup', authController.getCompanySignup)
 router.post('/companySignup', authController.postCompanySignup)
 router.get('/companies', homeController.getCompanies)
+router.post('/getPostcodeArrivalTime', homeController.getPostcodeArrivalTime)
 
 module.exports = router

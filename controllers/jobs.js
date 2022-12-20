@@ -3,6 +3,7 @@ const Job = require('../models/Job')
 const StartTime = require('../models/StartTime')
 const StartLocation = require('../models/StartLocation')
 const FinishTime = require('../models/FinishTime')
+const ArrivalTimes = require('../models/ArrivalTimes')
 
 module.exports = {
     getJobs: async (req,res)=>{
@@ -216,4 +217,18 @@ module.exports = {
             console.log(err)
         }
     },
+    addArrivalTimes: async(req,res) => {
+        console.log('this is the post request and this is req.body.postcodeArrivalTimes ', req.body.postcodeArrivalTimes)
+        try{
+            await ArrivalTimes.create({
+                postcodeArrivalTimes: req.body.postcodeArrivalTimes, 
+                workerId: req.user.id, 
+                company: req.user.company, 
+            });
+            console.log('Arrival times have been added!')
+            res.json({ success: true });
+        } catch(err){
+            console.log(err)
+        }
+    }
 }    
