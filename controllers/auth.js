@@ -1,8 +1,24 @@
+//setting the location of things
+const dotenv = require('dotenv');
+
 const passport = require('passport')
 const validator = require('validator')
 const User = require('../models/User')
 const Company = require('../models/Company')
+const { google } = require('googleapis');
+const { OAuth2Client } = require('google-auth-library');
+const axios = require('axios');
+const auth = require('../middleware/auth');
+const dayjs = require('dayjs')
 
+dotenv.config({path: './config/.env'})
+
+
+
+const calendar = google.calendar({
+  version : "v3",
+  auth : 'AIzaSyCXCd4hrp5RN4vhbxwaT8qm_y2aEc5HON4'
+})
  exports.getLogin = (req, res) => {
     if (req.user) {
       return res.redirect('/todos')
@@ -152,4 +168,93 @@ const Company = require('../models/Company')
         })
       })
     })
+  }
+
+  // let CLIENT_ID = process.env.CLIENT_ID;
+  // let CLIENT_SECRET = process.env.CLIENT_SECRET;
+  // let REDIRECT_URL =  process.env.REDIRECT_URL;
+
+  let CLIENT_ID = process.env.CLIENT_ID;
+  let CLIENT_SECRET = process.env.CLIENT_SECRET;
+  let REDIRECT_URL = process.env.REDIRECT_URL;
+  // const API_KEY = process.env.GOOGLE_CALENDAR_API_KEY;
+
+
+  const SCOPES = 'https://www.googleapis.com/auth/calendar';
+
+
+
+
+
+  const oAuth2Client = new google.auth.OAuth2(
+    CLIENT_ID,
+    CLIENT_SECRET,
+    REDIRECT_URL,
+  );
+
+  exports.googleAuthCode = (req, res) => {
+
+    console.log('running googleAuthCode')
+
+    
+
+    // Generate an authorization URL and redirect the user to Google's authorization page
+    const authUrl = oAuth2Client.generateAuthUrl({
+      
+      access_type: 'offline',
+      scope: SCOPES,
+    });
+    console.log('authURL: ',authUrl)
+    res.redirect(authUrl);
+
+
+  }
+
+
+
+  exports.googleRedirect = async (req, res) => {
+
+
+    const code = req.query.code;
+
+    const {tokens} = await oAuth2Client.getToken(code)
+    oAuth2Client.setCredentials(tokens);
+
+    console.log('tokenstokenstokenstokenstokenstokens',tokens)
+  //  res.send({
+  //   msg: "You have successfully logged in"
+  //  })
+    res.redirect('/jobs?message=Success')
+  }
+
+  exports.scheduleEvent = async (req, res) => {
+    
+
+    console.log('oAuth2ClientoAuth2ClientoAuth2ClientoAuth2Client')
+
+    
+
+    
+     const result = await calendar.events.insert({
+        auth : oAuth2Client,
+        calendarId: 'primary',
+        requestBody : {
+          summary : 'this is a test event',
+          description: 'important event',
+          start : {
+            dateTime : dayjs(new Date()).add(1, 'day').toISOString(),
+            timeZone : "Europe/London"
+          },
+          end : {
+            dateTime : dayjs(new Date()).add(1, 'day').add(1,"hour").toISOString(),
+            timeZone : "Europe/London"
+          }
+        },
+
+      })
+      
+      console.log('result result result result result ', result)
+      res.send({
+        msg: "Done"
+      })
   }

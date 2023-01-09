@@ -24,337 +24,375 @@
     </div>
         <!-- <a class="clearfix"  href="/logout">Logout</a> -->
     <%- include('partials/_header') %>
-    <div class="body-container clearfix">
-        <div class="input-container top-container">
-            <div>
-                <div class="grid-container">
-                    <h2>Start Time</h2>
+    
+            <div class="body-container clearfix">
+                <div class="main-grid">
+                    <div class="grid-col-1">
+                        <div class="input-container top-container">
+                            <div>
+                                <div class="grid-container">
+                                    <h2>Start Time</h2>
 
-                    <!-- Display the start time -->
-                    <% if (startTime) { %>
-                        <!-- Display the start time -->
-                        <li class='start-time' data-id='<%=startTime._id%>'>
-                        <span class="time" id="startTimeSpan"><%= startTime.startTime %></span>
-                        
-                        </li>
-                        <span class='delStartTime'><i class="fas fa-trash"></i></span>
-                    <% } %>
-                </div>
-                <% if (!startTime) { %>
-                    <form id="startTimeForm" action="/jobs/startTime" method="POST">
-                        <label for="startHour">Start Hour:</label>
-                        <select name="startHour" id="startHour">
-                            <option value="0">0</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                            <option value="6">6</option>
-                            <option value="7">7</option>
-                            <option value="8">8</option>
-                            <option value="9">9</option>
-                            <option value="10">10</option>
-                            <option value="11">11</option>
-                            <option value="12">12</option>
-                            <option value="13">13</option>
-                            <option value="14">14</option>
-                            <option value="15">15</option>
-                            <option value="16">16</option>
-                            <option value="17">17</option>
-                            <option value="18">18</option>
-                            <option value="19">19</option>
-                            <option value="20">20</option>
-                            <option value="21">21</option>
-                            <option value="22">22</option>
-                            <option value="23">23</option>
-                        </select>
-                        <label for="startMinute">Minutes:</label>
-                        <select name="startMinute" id="startMinute">
-                            <option value="0">00</option>
-                            <option value="5">05</option>
-                            <option value="10">10</option>
-                            <option value="15">15</option>
-                            <option value="20">20</option>
-                            <option value="25">25</option>
-                            <option value="30">30</option>
-                            <option value="35">35</option>
-                            <option value="40">40</option>
-                            <option value="45">45</option>
-                            <option value="50">50</option>
-                            <option value="55">55</option>
-                        </select>
-                        <input type="submit">
-                    </form>
-                <% } %>
-            </div>
-        </div>
-
-        <div class="input-container top-container">
-            <div class="grid-container">
-                <h2>Finish Time</h2>
-            
-            
-                <% if (finishTime) { %>
-                    <!-- Display the start time -->
-                    <li class='finish-time'data-id='<%=finishTime._id%>'>
-                    <span class="time" id="finishTimeSpan"><%= finishTime.finishTime %></span>
-                    
-                    </li>
-                    <span class='delFinishTime'><i class="fas fa-trash"></i></span>
-                <% } %>
-            </div>
-                <% if (!finishTime) { %>
-                    <form id="finishTimeForm" action="/jobs/finishTime" method="POST">
-                        <label for="finishHour">Finish Hour:</label>
-                        <select name="finishHour" id="finishHour">
-                            <option value="0">0</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                            <option value="6">6</option>
-                            <option value="7">7</option>
-                            <option value="8">8</option>
-                            <option value="9">9</option>
-                            <option value="10">10</option>
-                            <option value="11">11</option>
-                            <option value="12">12</option>
-                            <option value="13">13</option>
-                            <option value="14">14</option>
-                            <option value="15">15</option>
-                            <option value="16">16</option>
-                            <option value="17">17</option>
-                            <option value="18">18</option>
-                            <option value="19">19</option>
-                            <option value="20">20</option>
-                            <option value="21">21</option>
-                            <option value="22">22</option>
-                            <option value="23">23</option>
-                        </select>
-                        <label for="finishMinute">Minutes:</label>
-                        <select name="finishMinute" id="finishMinute">
-                            <option value="0">00</option>
-                            <option value="5">05</option>
-                            <option value="10">10</option>
-                            <option value="15">15</option>
-                            <option value="20">20</option>
-                            <option value="25">25</option>
-                            <option value="30">30</option>
-                            <option value="35">35</option>
-                            <option value="40">40</option>
-                            <option value="45">45</option>
-                            <option value="50">50</option>
-                            <option value="55">55</option>
-                        </select>
-                        <input type="submit">
-                    </form>
-                <% } %>
-            
-        </div>
-
-        <div class="input-container top-container">
-            <div class="grid-container start-location-div">
-                <h2>Start Location</h2>
-
-                <% if (startLocation) { %>
-                    <!-- Display the start time -->
-                    <li class='start-location' data-id='<%=startLocation._id%>'>
-                    <span id="startLocationSpan"><%= startLocation.startLocation %></span>
-                    
-                    </li>
-                    <span class='delStartLocation'><i class="fas fa-trash"></i></span>
-                <% } %>
-            </div>
-
-            <% if (!startLocation) { %>
-                <form action="/jobs/addStartLocation" method="POST">
-                    <input type="text" placeholder="Enter start location's postcode" name='startLocation'>
-                    <input type="submit">
-                </form>
-            <% } %>
-        </div>
-
-        
-        <div class="input-container">
-            <h1>Jobs</h1>
-            <p id="finishTimeWarning"></p>
-            <ul>
-                    <div class="job-grid-container">
-                        <h3>Postcode</h3>
-                        <h3>Estimated Job Length</h3>
-                        <h3></h3>
-                    </div>
-                    <!-- <div class="li-container">
-                        <% jobs.forEach( el => { %>
-                            <div class="job-item">
-                                
-                                <li class='jobItem' data-id='<%=el._id%>'>
-                                    <div class="job-grid-container">
+                                    <!-- Display the start time -->
+                                    <% if (startTime) { %>
+                                        <!-- Display the start time -->
+                                        <li class='start-time' data-id='<%=startTime._id%>'>
+                                        <span class="time" id="startTimeSpan"><%= startTime.startTime %></span>
                                         
-                                        
-                                        <span class="postcodeParent"><input type="checkbox" id="<%= el._id %>" class="job-checkbox" checked><span class="postcodeSpan"><%= el.postCode %> </span></span>
-                                        
-                                        
-                                        
-                                        <span class="jobLengthSpan"><%= el.estimatedJobLengthHours %> Hours <%= el.estimatedJobLengthMinutes %> Minutes </span>
-                                        <div class="button-container">
-                                            <button class="button-up">▲</button>
-                                            <button class="button-down">▼</button>
-                                        </div>
-                                        <span class="jobItemOrder hide" ><%= el.order %></span>
-                                        <span class='del'><i class="fas fa-trash"></i></span>
-                                    </div>
-                                    
-                                </li>
-                            </div>
-                        <% }) %>  
-                    </div>
-                     -->
-                     <div class="li-container">
-                        <% for (let i = 0; i < jobs.length; i++) { %>
-                            <% if (i === 0) { %>
-                                <div class="job-item">
-                                    <li class='jobItem' data-id='<%=jobs[i]._id%>'>
-                                      <div class="job-grid-container">
-                                        <span class="postcodeParent">
-                                          <input type="checkbox" id="<%= jobs[i]._id %>" class="job-checkbox" unchecked>
-                                          <span class="postcodeSpan"><%= jobs[i].postCode %> </span>
-                                        </span>
-                                        <span class="jobLengthSpan">
-                                          <%= jobs[i].estimatedJobLengthHours %> Hours <%= jobs[i].estimatedJobLengthMinutes %> Minutes
-                                        </span>
-                                        <div class="button-container">
-                                          <!-- <button class="button-up hide">▲</button> -->
-                                          <i class="fa-solid fa-angle-down button-down"></i>
-                                          <!-- <button class="button-down">▼</button> -->
-                                        </div>
-                                        <span class="jobItemOrder hide" ><%= jobs[i].order %></span>
-                                        <span class='del'><i class="fas fa-trash"></i></span>
-                                      </div>
-                                    </li>
-                                  </div>
-                            <% } else if (i === jobs.length - 1) { %>    
-                                <div class="job-item">
-                                    <li class='jobItem' data-id='<%=jobs[i]._id%>'>
-                                      <div class="job-grid-container">
-                                        <span class="postcodeParent">
-                                          <input type="checkbox" id="<%= jobs[i]._id %>" class="job-checkbox" unchecked>
-                                          <span class="postcodeSpan"><%= jobs[i].postCode %> </span>
-                                        </span>
-                                        <span class="jobLengthSpan">
-                                          <%= jobs[i].estimatedJobLengthHours %> Hours <%= jobs[i].estimatedJobLengthMinutes %> Minutes
-                                        </span>
-                                        <div class="button-container">
-                                            <i class="fa-solid fa-angle-up button-up"></i>
-                                          <!-- <button class="button-down">▼</button> -->
-                                        </div>
-                                        <span class="jobItemOrder hide" ><%= jobs[i].order %></span>
-                                        <span class='del'><i class="fas fa-trash"></i></span>
-                                      </div>
-                                    </li>
-                                  </div>
-                            <% } else { %>
-                                <div class="job-item">
-                                    <li class='jobItem' data-id='<%=jobs[i]._id%>'>
-                                      <div class="job-grid-container">
-                                        <span class="postcodeParent">
-                                          <input type="checkbox" id="<%= jobs[i]._id %>" class="job-checkbox" unchecked>
-                                          <span class="postcodeSpan"><%= jobs[i].postCode %> </span>
-                                        </span>
-                                        <span class="jobLengthSpan">
-                                          <%= jobs[i].estimatedJobLengthHours %> Hours <%= jobs[i].estimatedJobLengthMinutes %> Minutes
-                                        </span>
-                                        <div class="button-container">
-                                            <i class="fa-solid fa-angle-up  button-up"></i>
-                                            <i class="fa-solid fa-angle-down button-down"></i>
-                                        </div>
-                                        <span class="jobItemOrder hide" ><%= jobs[i].order %></span>
-                                        <span class='del'><i class="fas fa-trash"></i></span>
-                                      </div>
-                                    </li>
-                                  </div>
+                                        </li>
+                                        <span class='delStartTime'><i class="fas fa-trash"></i></span>
+                                    <% } %>
+                                </div>
+                                <% if (!startTime) { %>
+                                    <form id="startTimeForm" action="/jobs/startTime" method="POST">
+                                        <label for="startHour">Start Hour:</label>
+                                        <select name="startHour" id="startHour">
+                                            <option value="0">0</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                            <option value="7">7</option>
+                                            <option value="8">8</option>
+                                            <option value="9">9</option>
+                                            <option value="10">10</option>
+                                            <option value="11">11</option>
+                                            <option value="12">12</option>
+                                            <option value="13">13</option>
+                                            <option value="14">14</option>
+                                            <option value="15">15</option>
+                                            <option value="16">16</option>
+                                            <option value="17">17</option>
+                                            <option value="18">18</option>
+                                            <option value="19">19</option>
+                                            <option value="20">20</option>
+                                            <option value="21">21</option>
+                                            <option value="22">22</option>
+                                            <option value="23">23</option>
+                                        </select>
+                                        <label for="startMinute">Minutes:</label>
+                                        <select name="startMinute" id="startMinute">
+                                            <option value="0">00</option>
+                                            <option value="5">05</option>
+                                            <option value="10">10</option>
+                                            <option value="15">15</option>
+                                            <option value="20">20</option>
+                                            <option value="25">25</option>
+                                            <option value="30">30</option>
+                                            <option value="35">35</option>
+                                            <option value="40">40</option>
+                                            <option value="45">45</option>
+                                            <option value="50">50</option>
+                                            <option value="55">55</option>
+                                        </select>
+                                        <input type="submit">
+                                    </form>
                                 <% } %>
-                              
-                            <% } %>
+                            </div>
                         </div>
-            </ul>
-        </div>
-        
 
-        
-        <div class="input-container">
-            <h2>Add New Job</h2>
-            <form id="createJobForm" action="/jobs/createJob" method='POST'>
-                <div id="jobCreationOptions">
-                    <input type="text" placeholder="Enter The Job's Postcode" name='postCode'><br>
-                    <input type="text" placeholder="Enter Customer ID" name='customerId'><br/>
-                    <!-- <label for="hours">Estimated job length (hours):</label> -->
-                    
-                    <select id="hours" name="hours">
-                        <option value=”” disabled selected>Estimated job length (hours)</option>
-                        <option value="0">0</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                        <option value="6">6</option>
-                        <option value="7">7</option>
-                        <option value="8">8</option>
-                        <option value="9">9</option>
-                        <option value="10">10</option>
-                        <option value="11">11</option>
-                        <option value="12">12</option>
-                    </select><br/>
-                    <!-- <label for="minutes">Estimated job length (minutes):</label> -->
-                    <select id="minutes" name="minutes">
-                        <option value=”” disabled selected>Estimated job length (minutes)</option>
-                        <option value="0">00</option>
-                        <option value="5">05</option>
-                        <option value="10">10</option>
-                        <option value="15">15</option>
-                        <option value="20">20</option>
-                        <option value="25">25</option>
-                        <option value="30">30</option>
-                        <option value="35">35</option>
-                        <option value="40">40</option>
-                        <option value="45">45</option>
-                        <option value="50">50</option>
-                        <option value="55">55</option>
-                    </select>
-                </div><br/>
-                <input id="jobCreationSubmitButton" type="submit">
-            </form>
-        </div>
+                        
+                        <div class="input-container top-container">
+                            <div>
+                                <div class="grid-container">
+                                    <h2>Finish Time</h2>
+                                
+                                    <% if (!startTime) { %>
+                                        <span class="hide"></span>
+                                    
+                                    <% } else if (finishTime && startTime) { %>
+                                
+                                      
+                                        <li class='finish-time'data-id='<%=finishTime._id%>'>
+                                        <span class="time" id="finishTimeSpan"><%= finishTime.finishTime %></span>
+                                        
+                                        </li>
+                                        <span class='delFinishTime'><i class="fas fa-trash"></i></span>
+                                    <% } %>
+                                </div>
+                                <%  if (!finishTime && startTime) { %>
+                                <form id="finishTimeForm" action="/jobs/finishTime" method="POST">
+                                    <label for="finishHour">Finish Hour:</label>
+                                    <select name="finishHour" id="finishHour">
+                                        <option value="0">0</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                        <option value="13">13</option>
+                                        <option value="14">14</option>
+                                        <option value="15">15</option>
+                                        <option value="16">16</option>
+                                        <option value="17">17</option>
+                                        <option value="18">18</option>
+                                        <option value="19">19</option>
+                                        <option value="20">20</option>
+                                        <option value="21">21</option>
+                                        <option value="22">22</option>
+                                        <option value="23">23</option>
+                                    </select>
+                                    <label for="finishMinute">Minutes:</label>
+                                    <select name="finishMinute" id="finishMinute">
+                                        <option value="0">00</option>
+                                        <option value="5">05</option>
+                                        <option value="10">10</option>
+                                        <option value="15">15</option>
+                                        <option value="20">20</option>
+                                        <option value="25">25</option>
+                                        <option value="30">30</option>
+                                        <option value="35">35</option>
+                                        <option value="40">40</option>
+                                        <option value="45">45</option>
+                                        <option value="50">50</option>
+                                        <option value="55">55</option>
+                                    </select>
+                                    <input type="submit">
+                                </form>
+                                
+                                <% } %>
+                            </div>
+                            
+                        </div>
+                        
+                        <!-- <div class="input-container top-container">
+                            <div>
+                                <div class="grid-container">
+                                    <h2>Finish Time</h2>
+                                    <% if (!startTime) { %>
+                                        <span class="hide"></span>
+                                    <% } else if (startTime) { %>
+                                        <span class="">hello</span>
+                                    <% } else { %>
+                                        <span class="">goodbye</span>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div> -->
 
+                        <div class="input-container top-container">
+                            <div class="grid-container start-location-div">
+                                <h2>Start Location</h2>
 
-        
-        
-            <div class="jumbotron">
-                
-                <div class="container-fluid">
-                    <div id="googleMap"></div>
-                    
-                </div>
-                <div class="col-xs-offset-2 col-xs-10 buttonHolder">
-                    <button id="routebtn" class="">Calculate Day's Length</button>
-                </div>
-                <div id="outputHolder" class="input-container hide">
-                    <div class="container-fluid">
-                    
-                        <div id="output"></div>
+                                <% if (startLocation) { %>
+                                    <!-- Display the start time -->
+                                    <li class='start-location' data-id='<%=startLocation._id%>'>
+                                    <span id="startLocationSpan"><%= startLocation.startLocation %></span>
+                                    
+                                    </li>
+                                    <span class='delStartLocation'><i class="fas fa-trash"></i></span>
+                                <% } %>
+                            </div>
+
+                            <% if (!startLocation && startTime && finishTime) { %>
+                                <form action="/jobs/addStartLocation" method="POST">
+                                    <input type="text" placeholder="Enter start location's postcode" name='startLocation'>
+                                    <input type="submit">
+                                </form>
+                            <% } else { %>
+                                <span class="hide"></span>
+                            <% } %>
+
+                        </div>
+
+                        
+                        <div class="input-container">
+                            <h1>Jobs</h1>
+                            <p id="finishTimeWarning"></p>
+                            <ul>
+                                    <div class="job-grid-container">
+                                        <h3>Postcode</h3>
+                                        <h3>Estimated Job Length</h3>
+                                        <h3></h3>
+                                    </div>
+                                    <!-- <div class="li-container">
+                                        <% jobs.forEach( el => { %>
+                                            <div class="job-item">
+                                                
+                                                <li class='jobItem' data-id='<%=el._id%>'>
+                                                    <div class="job-grid-container">
+                                                        
+                                                        
+                                                        <span class="postcodeParent"><input type="checkbox" id="<%= el._id %>" class="job-checkbox" checked><span class="postcodeSpan"><%= el.postCode %> </span></span>
+                                                        
+                                                        
+                                                        
+                                                        <span class="jobLengthSpan"><%= el.estimatedJobLengthHours %> Hours <%= el.estimatedJobLengthMinutes %> Minutes </span>
+                                                        <div class="button-container">
+                                                            <button class="button-up">▲</button>
+                                                            <button class="button-down">▼</button>
+                                                        </div>
+                                                        <span class="jobItemOrder hide" ><%= el.order %></span>
+                                                        <span class='del'><i class="fas fa-trash"></i></span>
+                                                    </div>
+                                                    
+                                                </li>
+                                            </div>
+                                        <% }) %>  
+                                    </div>
+                                    -->
+                                    <div class="li-container">
+                                        <% for (let i = 0; i < jobs.length; i++) { %>
+                                            <% if (i === 0) { %>
+                                                <div class="job-item">
+                                                    <li class='jobItem' data-id='<%=jobs[i]._id%>'>
+                                                    <div class="job-grid-container">
+                                                        <span class="postcodeParent">
+                                                        <input type="checkbox" id="<%= jobs[i]._id %>" class="job-checkbox" unchecked>
+                                                        <span class="postcodeSpan"><%= jobs[i].postCode %> </span>
+                                                        </span>
+                                                        <span class="jobLengthSpan">
+                                                        <%= jobs[i].estimatedJobLengthHours %> Hours <%= jobs[i].estimatedJobLengthMinutes %> Minutes
+                                                        </span>
+                                                        <div class="button-container">
+                                                        <!-- <button class="button-up hide">▲</button> -->
+                                                        <i class="fa-solid fa-angle-down button-down"></i>
+                                                        <!-- <button class="button-down">▼</button> -->
+                                                        </div>
+                                                        <span class="jobItemOrder hide" ><%= jobs[i].order %></span>
+                                                        <span class='del'><i class="fas fa-trash"></i></span>
+                                                    </div>
+                                                    </li>
+                                                </div>
+                                            <% } else if (i === jobs.length - 1) { %>    
+                                                <div class="job-item">
+                                                    <li class='jobItem' data-id='<%=jobs[i]._id%>'>
+                                                    <div class="job-grid-container">
+                                                        <span class="postcodeParent">
+                                                        <input type="checkbox" id="<%= jobs[i]._id %>" class="job-checkbox" unchecked>
+                                                        <span class="postcodeSpan"><%= jobs[i].postCode %> </span>
+                                                        </span>
+                                                        <span class="jobLengthSpan">
+                                                        <%= jobs[i].estimatedJobLengthHours %> Hours <%= jobs[i].estimatedJobLengthMinutes %> Minutes
+                                                        </span>
+                                                        <div class="button-container">
+                                                            <i class="fa-solid fa-angle-up button-up"></i>
+                                                        <!-- <button class="button-down">▼</button> -->
+                                                        </div>
+                                                        <span class="jobItemOrder hide" ><%= jobs[i].order %></span>
+                                                        <span class='del'><i class="fas fa-trash"></i></span>
+                                                    </div>
+                                                    </li>
+                                                </div>
+                                            <% } else { %>
+                                                <div class="job-item">
+                                                    <li class='jobItem' data-id='<%=jobs[i]._id%>'>
+                                                    <div class="job-grid-container">
+                                                        <span class="postcodeParent">
+                                                        <input type="checkbox" id="<%= jobs[i]._id %>" class="job-checkbox" unchecked>
+                                                        <span class="postcodeSpan"><%= jobs[i].postCode %> </span>
+                                                        </span>
+                                                        <span class="jobLengthSpan">
+                                                        <%= jobs[i].estimatedJobLengthHours %> Hours <%= jobs[i].estimatedJobLengthMinutes %> Minutes
+                                                        </span>
+                                                        <div class="button-container">
+                                                            <i class="fa-solid fa-angle-up  button-up"></i>
+                                                            <i class="fa-solid fa-angle-down button-down"></i>
+                                                        </div>
+                                                        <span class="jobItemOrder hide" ><%= jobs[i].order %></span>
+                                                        <span class='del'><i class="fas fa-trash"></i></span>
+                                                    </div>
+                                                    </li>
+                                                </div>
+                                                <% } %>
+                                            
+                                            <% } %>
+                                        </div>
+                            </ul>
+                        </div>
                     </div>
+
+
+                    <div class="grid-col-2">
+                        <div class="input-container">
+                            <h2>Add New Job</h2>
+                            <form id="createJobForm" action="/jobs/createJob" method='POST'>
+                                <div id="jobCreationOptions">
+                                    <input type="text" placeholder="Enter The Job's Postcode" name='postCode'><br>
+                                    <input type="text" placeholder="Enter Customer Phone Number" name='customerId'><br/>
+                                    <!-- <label for="hours">Estimated job length (hours):</label> -->
+                                    
+                                    <select id="hours" name="hours">
+                                        <option value=”” disabled selected>Estimated job length (hours)</option>
+                                        <option value="0">0</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                    </select><br/>
+                                    <!-- <label for="minutes">Estimated job length (minutes):</label> -->
+                                    <select id="minutes" name="minutes">
+                                        <option value=”” disabled selected>Estimated job length (minutes)</option>
+                                        <option value="0">00</option>
+                                        <option value="5">05</option>
+                                        <option value="10">10</option>
+                                        <option value="15">15</option>
+                                        <option value="20">20</option>
+                                        <option value="25">25</option>
+                                        <option value="30">30</option>
+                                        <option value="35">35</option>
+                                        <option value="40">40</option>
+                                        <option value="45">45</option>
+                                        <option value="50">50</option>
+                                        <option value="55">55</option>
+                                    </select>
+                                </div><br/>
+                                <input id="jobCreationSubmitButton" type="submit">
+                            </form>
+                        </div>
+
+
+                        
+                        
+                            <div class="jumbotron">
+                                
+                                <div class="container-fluid">
+                                    <div id="googleMap"></div>
+                                    
+                                </div>
+                                <div class="col-xs-offset-2 col-xs-10 buttonHolder">
+                                    <button id="routebtn" class="">Calculate Day's Length</button>
+                                </div>
+                                <div id="outputHolder" class="input-container hide">
+                                    <div class="container-fluid">
+                                    
+                                        <div id="output"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="input-container">
+                                <button id="connectGoogleMapsButton"><a href="/google">Connect Google Maps</a></button>
+                            </div>
+                    </div>
+
+                    
                 </div>
             </div>
-        </div>
 
-
+   
 
         <script src="https://cdn.jsdelivr.net/npm/placeholder-shim@1.0.4/dist/placeholder-shim.min.js"></script>
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3fGF38PYrTPfqMOqZzkdE94cgnvn07GQ&libraries=places"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script src="https://apis.google.com/js/client.js"></script>
         <script src="/js/main.js"></script>
 
     </body>

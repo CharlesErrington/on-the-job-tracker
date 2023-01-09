@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const authController = require('../controllers/auth') 
+const authController = require('../controllers/auth')
 const homeController = require('../controllers/home')
 const { ensureAuth, ensureGuest } = require('../middleware/auth')
 
@@ -14,5 +14,9 @@ router.get('/companySignup', authController.getCompanySignup)
 router.post('/companySignup', authController.postCompanySignup)
 router.get('/companies', homeController.getCompanies)
 router.post('/getPostcodeArrivalTime', homeController.getPostcodeArrivalTime)
+router.get('/google', authController.googleAuthCode)
+router.get('/google/redirect', authController.googleRedirect)
+router.get('/schedule_event', authController.scheduleEvent)
+// router.post('/auth/google/callback', authController.googleAuthToken)
 
 module.exports = router

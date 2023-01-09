@@ -1,3 +1,4 @@
+
 const deleteBtn = document.querySelectorAll('.del')
 const todoItem = document.querySelectorAll('span.not')
 const todoComplete = document.querySelectorAll('span.completed')
@@ -7,6 +8,11 @@ const deleteBtnFinishTime = document.querySelectorAll('.delFinishTime')
 const changeOrderUp = document.querySelectorAll('.button-up')
 const changeOrderDown = document.querySelectorAll('.button-down')
 const closeAlertButton = document.querySelector('.close-btn')
+const connectGoogleMapsButton = document.querySelector('#connectGoogleMapsButton')
+
+
+
+// connectGoogleMapsButton.addEventListener('click', connectGoogleMaps)
 
 closeAlertButton.addEventListener('click', closeAlert)
 
@@ -365,15 +371,20 @@ function calcRoute() {
             //Check the hours that the worker has set and is hoping to work against the hours calculated by the routes and the jobs, if the calculated hours are greater than the hours set give the worker a warning
             checkExpectedDurationAgainstDesiredDurationAndGiveWarning(hours,minutes,diffString)
 
-            setTheResultsInfoIntoTheOutputDivAndMakeItVisible(distance, durationString, finishTime)
 
-            // remove the hide class from the LockItIn button
-            showLockInButton()
+            let arrivalTimeSpanString = createArrivalTimeStringforOutput(postcodes, postcodeArrivalTimes)
+
+            setTheResultsInfoIntoTheOutputDivAndMakeItVisible(distance, durationString, finishTime, arrivalTimeSpanString)
+
+            
 
             // Display the route on the map
             directionsDisplay.setDirections(result);
 
             let postcodeArrivalTimeObject = combineTwoArraysIntoAnObject(postcodes, postcodeArrivalTimes)
+
+            
+
             console.log('postcodeArrivalTimeObject postcodeArrivalTimeObject postcodeArrivalTimeObject ', postcodeArrivalTimeObject)
 
             await addArrivalTimes(postcodeArrivalTimeObject)
@@ -707,7 +718,7 @@ function checkExpectedDurationAgainstDesiredDurationAndGiveWarning(hours,minutes
     
 }
 
-function setTheResultsInfoIntoTheOutputDivAndMakeItVisible(distance, durationString, finishTime) {
+function setTheResultsInfoIntoTheOutputDivAndMakeItVisible(distance, durationString, finishTime, arrivalTimeSpanString) {
     // Get the container holding the output element that is currently hidden
     const outputHolder = document.getElementById('outputHolder')
 
@@ -722,7 +733,39 @@ function setTheResultsInfoIntoTheOutputDivAndMakeItVisible(distance, durationStr
 
    
     // Update the output with the total distance and duration
-    output.innerHTML = "<div class='alert-info'><h3>Total distance: </h3><span>" + distanceInMiles + " miles.</span><h3>Total duration: </h3><span>" + durationString + ".</span><h3>Finish Time: </h3><span class='time'>" + finishTime + "</span></div>";
+    output.innerHTML = "<div class='alert-info'><h3>Total distance: </h3><span>" + distanceInMiles + " miles.</span><h3>Total duration: </h3><span>" + durationString + ".</span><h3>Finish Time: </h3><span class='time'>" + finishTime + "</span>" + arrivalTimeSpanString + "</div>";
+}
+
+function createArrivalTimeStringforOutput(postcodes, postcodeArrivalTimes) {
+    // console.log()
+    let arrivalTimeSpanString = ''
+    for(let i = 0; i < postcodes.length; i++) {
+        console.log('this is the createArrivalTimeStringforOutput')
+        console.log(postcodes[i])
+        console.log(postcodeArrivalTimes[i])
+        arrivalTimeSpanString += `<h3>${postcodes[i]}:</h3><span class="time">${postcodeArrivalTimes[i]}</span>`
+        
+    }
+    return arrivalTimeSpanString
+}
+
+async function connectGoogleMaps() {
+ console.log('hey hey')
+  // Send a request to the server to obtain an authorization code
+  const response = await fetch('/auth/google');
+  const code = await response.text();
+  console.log(code)
+
+    //Exchange the authorization code for an access token
+    const tokenResponse = await fetch('/auth/google/callback', {
+        method: 'POST',
+        body: JSON.stringify({code}),
+        headers: {'Content-Type': 'application/json'}
+        });
+        const token = await tokenResponse.text();
+        console.log('token: ',token)
+        //Save the token to the database or session here
+    
 }
 
 //create autocomplete objects for all inputs
